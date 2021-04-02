@@ -6,20 +6,19 @@ import com.inthebytes.accountservice.entity.User;
 import com.inthebytes.accountservice.entity.UserConfirmation;
 import com.inthebytes.accountservice.service.EmailSendService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -35,26 +34,28 @@ public class UserAccountController {
 	@Autowired
 	private EmailSendService emailSendService;
 
-	@GetMapping(path="/confirm-account", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-	public String confirmUserAccount(@RequestParam("token")String confirmationToken) {
+	@PutMapping(path="/confirm-account", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<String> confirmUserAccount(@RequestParam("token")String confirmationToken) {
 		UserConfirmation token = userConfirmationDao.findByConfirmationToken(confirmationToken);
 
 		if (token != null) {
 			User user = userDao.findByUserId(token.getUserId());
 			token.setConfirmed(true);
 			userConfirmationDao.save(token);
-			return "Account confirmed!";
+			return new ResponseEntity<>("Account confirmed!", HttpStatus.OK);
 		} else {
-			return "Invalid verification token.";
+			return new ResponseEntity<>("Invalid verification token.", HttpStatus.NOT_FOUND);
 		}
 	}
 
-	@GetMapping(value="/verify")
-	public String verifyUser(@RequestParam("email") String email) {
+	@PostMapping(value="/verify", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<String> verifyUser(@RequestParam("email") String email) {
 		User existingUser = userDao.findByEmailIgnoreCase(email);
 
 		if (existingUser == null) {
-			return "Email doesn't exists.";
+			return new ResponseEntity<>("Email doesn't exist", HttpStatus.NOT_FOUND);
 		}
 
 		// Create confirmation
@@ -75,6 +76,6 @@ public class UserAccountController {
 
 		emailSendService.sendMail(mailMessage);
 
-		return "Account created. Please check your email to verify your account.";
+		return new ResponseEntity<>("Account created. Please check your email to verify your account.", HttpStatus.CREATED);
 	}
 }
