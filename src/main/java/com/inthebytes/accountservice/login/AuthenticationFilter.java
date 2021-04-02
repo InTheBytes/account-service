@@ -37,8 +37,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 		try {
 			credentials = new ObjectMapper().readValue(request.getInputStream(), LoginViewModel.class);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return null;
 		}
 		
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
