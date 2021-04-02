@@ -17,8 +17,8 @@ public class LoginDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		LoginUser user = userRepo.findUserByUsername(username);
-		LoginPrinciple loginPrin = new LoginPrinciple(user);
+		LoginUser user = userRepo.findByUsername(username);
+		LoginPrincipal loginPrin = new LoginPrincipal(user);
 		return loginPrin;
 	}
 

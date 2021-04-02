@@ -1,5 +1,7 @@
 package com.inthebytes.accountservice.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,22 +11,24 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "role")
-public class Role {
+public class UserRole implements Serializable {
 	
+	private static final long serialVersionUID = 8997431671030073287L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "role_id")
-	private Integer userId;
+	private Integer roleId;
 	
 	@Column(name = "name")
 	private String name;
 
-	public Integer getUserId() {
-		return userId;
+	public Integer getRoleId() {
+		return roleId;
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setRoleId(Integer userId) {
+		this.roleId = userId;
 	}
 
 	public String getName() {

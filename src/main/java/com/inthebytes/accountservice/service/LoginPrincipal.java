@@ -1,22 +1,31 @@
 package com.inthebytes.accountservice.service;
 
 import java.util.ArrayList;
+
 import java.util.Collection;
 import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.inthebytes.accountservice.dao.RoleDAO;
 import com.inthebytes.accountservice.model.LoginUser;
+import static org.apache.commons.codec.digest.HmacAlgorithms.HMAC_SHA_512;
 
-public class LoginPrinciple implements UserDetails {
+
+public class LoginPrincipal implements UserDetails {
 	
-	private LoginUser user;
+	private static final long serialVersionUID = -1610064484091786350L;
 
-	public LoginPrinciple(LoginUser user) {
+	private LoginUser user;
+	
+	@Autowired
+	EntityManager em;
+	
+	public LoginPrincipal(LoginUser user) {
 		this.user = user;
 	}
 	
@@ -24,7 +33,9 @@ public class LoginPrinciple implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<>();
-		GrantedAuthority auth = new SimpleGrantedAuthority(user.getRoleString());
+		
+		String r = "ROLE_" + user.getUserRole().getName().toUpperCase();
+		GrantedAuthority auth = new SimpleGrantedAuthority(r);
 		authorities.add(auth);
 		return authorities;
 	}
