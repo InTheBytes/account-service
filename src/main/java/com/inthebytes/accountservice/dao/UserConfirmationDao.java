@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserConfirmationDao extends JpaRepository<UserConfirmation, Long> {
 	UserConfirmation findByConfirmationToken(String confirmationToken);
+	UserConfirmation findUserConfirmationByUserId(Long userId);
 }

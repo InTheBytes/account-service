@@ -49,13 +49,19 @@ public class UserAccountController {
 		}
 	}
 
-	@PostMapping(value="/verify", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@PutMapping(value="/verify", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	@ResponseBody
 	public ResponseEntity<String> verifyUser(@RequestParam("email") String email) {
 		User existingUser = userDao.findByEmailIgnoreCase(email);
 
 		if (existingUser == null) {
 			return new ResponseEntity<>("Email doesn't exist", HttpStatus.NOT_FOUND);
+		}
+
+		UserConfirmation existingUserConfirmation = userConfirmationDao.findUserConfirmationByUserId(existingUser.getUserId());
+
+		if (existingUserConfirmation != null && existingUserConfirmation.getConfirmed()) {
+			return new ResponseEntity<>("User already confirmed!", HttpStatus.OK);
 		}
 
 		// Create confirmation
