@@ -1,7 +1,9 @@
-package com.inthebytes.accountservice.security;
+package com.inthebytes.accountservice.login;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -12,8 +14,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inthebytes.accountservice.model.LoginViewModel;
 
@@ -26,13 +31,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 		this.authManager = authManager;
 	}
 	
-	/**
-	 * Triggers with POST
-	 * Pass in {"username":"user", "password":"pass"} template
-	 */
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-		LoginViewModel credentials;
+		LoginViewModel credentials = null;
 		try {
 			credentials = new ObjectMapper().readValue(request.getInputStream(), LoginViewModel.class);
 		} catch (IOException e) {
@@ -51,6 +52,17 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-		super.successfulAuthentication(request, response, chain, authResult);
+		LoginPrincipal prin = (LoginPrincipal) authResult.getPrincipal();
+		String authorities = prin.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.joining(","));
+		
+		String token = JWT.create()
+				.withSubject(prin.getUsername())
+				.withClaim(JwtProperties.AUTHORITIES_KEY, authorities)
+				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
+				.sign(Algorithm.HMAC512(JwtProperties.SECRET.getBytes()));
+		
+		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);
 	}
 }

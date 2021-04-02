@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.inthebytes.accountservice.dao.LoginUserDAO;
+import com.inthebytes.accountservice.login.LoginPrincipal;
 import com.inthebytes.accountservice.model.LoginUser;
 
 @Service

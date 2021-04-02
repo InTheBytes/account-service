@@ -16,5 +16,4 @@ public class LoginViewModel {
 		this.password = password;
 	}
 	
-	
 }
