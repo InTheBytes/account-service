@@ -7,8 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class AccountserviceApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void contextLoads() throws Exception {
+		
 	}
-
 
 }
