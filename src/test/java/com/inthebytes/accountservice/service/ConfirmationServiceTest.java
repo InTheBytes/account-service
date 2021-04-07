@@ -15,6 +15,7 @@ public class ConfirmationServiceTest {
 
 	@org.junit.Test
 	public void test_confirmUserAccount_confirm_positive() {
+		// Need to change data.sql to reflect correct date
 		assertEquals(200, confirmationService.confirmUserAccount("validtoken").getStatusCodeValue());
 	}
 
