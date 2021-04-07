@@ -1,5 +1,7 @@
 package com.inthebytes.accountservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,9 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Collection;
 
 @Entity
+@Table(name="role")
 public class Role {
 	private Long roleId;
 	private String name;
@@ -57,6 +61,7 @@ public class Role {
 	}
 
 	@OneToMany(mappedBy = "roleByUserRole")
+	@JsonManagedReference
 	public Collection<User> getUsersByRoleId() {
 		return usersByRoleId;
 	}

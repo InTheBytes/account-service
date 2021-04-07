@@ -9,12 +9,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name="user_confirmation")
+@Table(name= "user_confirmation")
 public class UserConfirmation {
 	private Long tokenId;
 	private String confirmationToken;
@@ -102,8 +103,8 @@ public class UserConfirmation {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, insertable=false, updatable=false)
 	@JsonBackReference
+	@JoinColumns(@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, insertable = false, updatable = false))
 	public User getUserByUserId() {
 		return userByUserId;
 	}

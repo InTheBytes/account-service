@@ -1,6 +1,7 @@
 package com.inthebytes.accountservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -9,11 +10,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Collection;
 
 @Entity
+@Table(name="user")
 public class User {
 	private Long userId;
 	private Long userRole;
@@ -25,6 +29,12 @@ public class User {
 	private String lastName;
 	private Role roleByUserRole;
 	private Collection<UserConfirmation> userConfirmationsByUserId;
+	private Boolean active;
+//	private Collection<Driver> driversByUserId;
+//	private Collection<Payment> paymentsByUserId;
+//	private Collection<Restaurant> restaurantsByUserId;
+//	private Collection<UserLocation> userLocationsByUserId;
+//	private Collection<UserOrder> userOrdersByUserId;
 
 	@Id
 	@Column(name = "user_id", nullable = false)
@@ -140,8 +150,8 @@ public class User {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "user_role", referencedColumnName = "role_id", nullable = false, insertable=false, updatable=false)
 	@JsonBackReference
+	@JoinColumns(@JoinColumn(name = "user_role", referencedColumnName = "role_id", nullable = false, insertable = false, updatable = false))
 	public Role getRoleByUserRole() {
 		return roleByUserRole;
 	}
@@ -151,6 +161,7 @@ public class User {
 	}
 
 	@OneToMany(mappedBy = "userByUserId")
+	@JsonManagedReference
 	public Collection<UserConfirmation> getUserConfirmationsByUserId() {
 		return userConfirmationsByUserId;
 	}
@@ -158,4 +169,59 @@ public class User {
 	public void setUserConfirmationsByUserId(Collection<UserConfirmation> userConfirmationsByUserId) {
 		this.userConfirmationsByUserId = userConfirmationsByUserId;
 	}
+
+	@Basic
+	@Column(name = "active", nullable = false)
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+//	@OneToMany(mappedBy = "userByUserId")
+//	public Collection<Driver> getDriversByUserId() {
+//		return driversByUserId;
+//	}
+//
+//	public void setDriversByUserId(Collection<Driver> driversByUserId) {
+//		this.driversByUserId = driversByUserId;
+//	}
+//
+//	@OneToMany(mappedBy = "userByUserId")
+//	public Collection<Payment> getPaymentsByUserId() {
+//		return paymentsByUserId;
+//	}
+//
+//	public void setPaymentsByUserId(Collection<Payment> paymentsByUserId) {
+//		this.paymentsByUserId = paymentsByUserId;
+//	}
+//
+//	@OneToMany(mappedBy = "userByManagerId")
+//	public Collection<Restaurant> getRestaurantsByUserId() {
+//		return restaurantsByUserId;
+//	}
+//
+//	public void setRestaurantsByUserId(Collection<Restaurant> restaurantsByUserId) {
+//		this.restaurantsByUserId = restaurantsByUserId;
+//	}
+//
+//	@OneToMany(mappedBy = "userByUserId")
+//	public Collection<UserLocation> getUserLocationsByUserId() {
+//		return userLocationsByUserId;
+//	}
+//
+//	public void setUserLocationsByUserId(Collection<UserLocation> userLocationsByUserId) {
+//		this.userLocationsByUserId = userLocationsByUserId;
+//	}
+//
+//	@OneToMany(mappedBy = "userByUserId")
+//	public Collection<UserOrder> getUserOrdersByUserId() {
+//		return userOrdersByUserId;
+//	}
+//
+//	public void setUserOrdersByUserId(Collection<UserOrder> userOrdersByUserId) {
+//		this.userOrdersByUserId = userOrdersByUserId;
+//	}
 }
