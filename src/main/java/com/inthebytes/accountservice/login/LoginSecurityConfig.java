@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.inthebytes.accountservice.service.LoginDetailsService;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
@@ -29,13 +30,15 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		 http
-		 		.csrf().disable()
-		 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		 		.and()
-		 		.addFilter(new AuthenticationFilter(authenticationManager()))
-		 		.authorizeRequests()
-		 		.antMatchers(HttpMethod.POST, "/login").permitAll();
+		http
+			.csrf().disable()
+		 	.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		 	.and()
+		 	.addFilter(new AuthenticationFilter(authenticationManager()))
+		 	.authorizeRequests()
+		 	.antMatchers(HttpMethod.POST, "/login").permitAll()
+			.and()
+			.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login");
 	}
 	
 	@Bean
