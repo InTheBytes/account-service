@@ -25,7 +25,7 @@ public class LoginPrincipal implements UserDetails {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		
-		String r = "ROLE_" + user.getRoleByUserRole().getName().toUpperCase();
+		String r = "ROLE_" + user.getRole().getName().toUpperCase();
 		GrantedAuthority auth = new SimpleGrantedAuthority(r);
 		authorities.add(auth);
 		return authorities;

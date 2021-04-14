@@ -1,7 +1,5 @@
 package com.inthebytes.accountservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,24 +7,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.Collection;
 
 @Entity
-@Table(name="role")
 public class Role {
-	private Long roleId;
+	private Integer roleId;
 	private String name;
-	private Collection<User> usersByRoleId;
+	private Collection<User> users;
 
 	@Id
-	@Column(name = "role_id", nullable = false)
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
-	public Long getRoleId() {
+	@Column(name = "role_id", nullable = false)
+	public Integer getRoleId() {
 		return roleId;
 	}
 
-	public void setRoleId(Long roleId) {
+	public void setRoleId(Integer roleId) {
 		this.roleId = roleId;
 	}
 
@@ -60,13 +56,12 @@ public class Role {
 		return result;
 	}
 
-	@OneToMany(mappedBy = "roleByUserRole")
-	@JsonManagedReference
-	public Collection<User> getUsersByRoleId() {
-		return usersByRoleId;
+	@OneToMany(mappedBy = "role")
+	public Collection<User> getUsers() {
+		return users;
 	}
 
-	public void setUsersByRoleId(Collection<User> usersByRoleId) {
-		this.usersByRoleId = usersByRoleId;
+	public void setUsers(Collection<User> users) {
+		this.users = users;
 	}
 }

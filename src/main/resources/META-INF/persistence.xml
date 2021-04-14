@@ -6,15 +6,17 @@
     <persistence-unit name="default">
         <class>com.inthebytes.accountservice.entity.Role</class>
         <class>com.inthebytes.accountservice.entity.User</class>
-        <class>com.inthebytes.accountservice.entity.UserConfirmation</class>
-        <!-- Added later
+        <class>com.inthebytes.accountservice.entity.Authorization</class>
         <class>com.inthebytes.accountservice.entity.Driver</class>
+        <class>com.inthebytes.accountservice.entity.Food</class>
+        <class>com.inthebytes.accountservice.entity.Location</class>
         <class>com.inthebytes.accountservice.entity.Order</class>
         <class>com.inthebytes.accountservice.entity.Payment</class>
         <class>com.inthebytes.accountservice.entity.Restaurant</class>
-        <class>com.inthebytes.accountservice.entity.UserLocation</class>
-        <class>com.inthebytes.accountservice.entity.UserOrder</class>
-        -->
+        <class>com.inthebytes.accountservice.entity.Transaction</class>
+        <class>com.inthebytes.accountservice.entity.Confirmation</class>
+        <class>com.inthebytes.accountservice.entity.Delivery</class>
+        <class>com.inthebytes.accountservice.entity.Manager</class>
         <properties>
             <property name="hibernate.connection.url"
                       value="jdbc:mysql://ss-inthebytes.c0kpocg37ees.us-east-2.rds.amazonaws.com:3306/stacklunch"/>
