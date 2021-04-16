@@ -6,32 +6,28 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.util.Collection;
 
 @Entity
 public class Role {
-	private Integer roleId;
-	private String name;
-	private Collection<User> users;
-
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	@Column(name = "role_id", nullable = false)
+	private Integer roleId;
+
+	@Basic
+	@Column(name = "name", nullable = false, length = 45)
+	private String name;
+
 	public Integer getRoleId() {
 		return roleId;
 	}
-
 	public void setRoleId(Integer roleId) {
 		this.roleId = roleId;
 	}
 
-	@Basic
-	@Column(name = "name", nullable = false, length = 45)
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -54,14 +50,5 @@ public class Role {
 		int result = roleId != null ? roleId.hashCode() : 0;
 		result = 31 * result + (name != null ? name.hashCode() : 0);
 		return result;
-	}
-
-	@OneToMany(mappedBy = "role")
-	public Collection<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Collection<User> users) {
-		this.users = users;
 	}
 }

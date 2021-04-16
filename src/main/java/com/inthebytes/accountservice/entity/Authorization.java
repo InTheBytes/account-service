@@ -8,25 +8,25 @@ import java.sql.Timestamp;
 
 @Entity
 public class Authorization {
-	private String token;
-	private Timestamp expirationDate;
 
 	@Id
 	@Column(name = "token", nullable = false, length = 256)
+	private String token;
+
+	@Basic
+	@Column(name = "expiration_date", nullable = false)
+	private Timestamp expirationDate;
+
 	public String getToken() {
 		return token;
 	}
-
 	public void setToken(String token) {
 		this.token = token;
 	}
 
-	@Basic
-	@Column(name = "expiration_date", nullable = false)
 	public Timestamp getExpirationDate() {
 		return expirationDate;
 	}
-
 	public void setExpirationDate(Timestamp expirationDate) {
 		this.expirationDate = expirationDate;
 	}

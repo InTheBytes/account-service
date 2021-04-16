@@ -3,7 +3,6 @@ package com.inthebytes.accountservice.entity;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,51 +12,61 @@ import java.sql.Timestamp;
 
 @Entity
 public class Confirmation {
-	private Integer tokenId;
-	private String confirmationToken;
-	private Timestamp createdDate;
-	private Boolean isConfirmed;
-	private User user;
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	@Column(name = "token_id", nullable = false)
+	private Integer tokenId;
+
+	@Basic
+	@Column(name = "confirmation_token", nullable = false, length = 256)
+	private String confirmationToken;
+
+	@Basic
+	@Column(name = "created_date", nullable = false)
+	private Timestamp createdDate;
+
+	@Basic
+	@Column(name = "is_confirmed", nullable = false)
+	private Boolean isConfirmed;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+	private User user;
+
 	public Integer getTokenId() {
 		return tokenId;
 	}
-
 	public void setTokenId(Integer tokenId) {
 		this.tokenId = tokenId;
 	}
 
-	@Basic
-	@Column(name = "confirmation_token", nullable = false, length = 256)
 	public String getConfirmationToken() {
 		return confirmationToken;
 	}
-
 	public void setConfirmationToken(String confirmationToken) {
 		this.confirmationToken = confirmationToken;
 	}
 
-	@Basic
-	@Column(name = "created_date", nullable = false)
 	public Timestamp getCreatedDate() {
 		return createdDate;
 	}
-
 	public void setCreatedDate(Timestamp createdDate) {
 		this.createdDate = createdDate;
 	}
 
-	@Basic
-	@Column(name = "is_confirmed", nullable = false)
 	public Boolean getConfirmed() {
 		return isConfirmed;
 	}
-
 	public void setConfirmed(Boolean confirmed) {
 		isConfirmed = confirmed;
+	}
+
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Override
@@ -83,15 +92,5 @@ public class Confirmation {
 		result = 31 * result + (createdDate != null ? createdDate.hashCode() : 0);
 		result = 31 * result + (isConfirmed != null ? isConfirmed.hashCode() : 0);
 		return result;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 }

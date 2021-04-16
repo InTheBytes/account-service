@@ -3,111 +3,113 @@ package com.inthebytes.accountservice.entity;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.Collection;
 
 @Entity
 public class User {
-	private Integer userId;
-	private String username;
-	private String password;
-	private String email;
-	private String phone;
-	private String firstName;
-	private String lastName;
-	private Boolean active;
-	private Collection<Confirmation> confirmations;
-	private Collection<Driver> drivers;
-	private Collection<Manager> managers;
-	private Collection<Order> orders;
-	private Collection<Payment> payments;
-	private Role role;
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	@Column(name = "user_id", nullable = false)
+	private Integer userId;
+
+	@Basic
+	@Column(name = "username", nullable = false, length = 45)
+	private String username;
+
+	@Basic
+	@Column(name = "password", nullable = false, length = 81)
+	private String password;
+
+	@Basic
+	@Column(name = "email", nullable = false, length = 45)
+	private String email;
+
+	@Basic
+	@Column(name = "phone", nullable = false, length = 45)
+	private String phone;
+
+	@Basic
+	@Column(name = "first_name", nullable = false, length = 45)
+	private String firstName;
+
+	@Basic
+	@Column(name = "last_name", nullable = false, length = 45)
+	private String lastName;
+
+	@Basic
+	@Column(name = "active", nullable = false)
+	private Boolean active;
+
+	@ManyToOne
+	@JoinColumn(name = "user_role", referencedColumnName = "role_id", nullable = false)
+	private Role role;
+
 	public Integer getUserId() {
 		return userId;
 	}
-
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 
-	@Basic
-	@Column(name = "username", nullable = false, length = 45)
 	public String getUsername() {
 		return username;
 	}
-
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
-	@Basic
-	@Column(name = "password", nullable = false, length = 81)
 	public String getPassword() {
 		return password;
 	}
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	@Basic
-	@Column(name = "email", nullable = false, length = 45)
 	public String getEmail() {
 		return email;
 	}
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
-	@Basic
-	@Column(name = "phone", nullable = false, length = 45)
 	public String getPhone() {
 		return phone;
 	}
-
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
-	@Basic
-	@Column(name = "first_name", nullable = false, length = 45)
 	public String getFirstName() {
 		return firstName;
 	}
-
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
-	@Basic
-	@Column(name = "last_name", nullable = false, length = 45)
 	public String getLastName() {
 		return lastName;
 	}
-
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
-	@Basic
-	@Column(name = "active", nullable = false)
 	public Boolean getActive() {
 		return active;
 	}
-
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
 	@Override
@@ -140,60 +142,5 @@ public class User {
 		result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
 		result = 31 * result + (active != null ? active.hashCode() : 0);
 		return result;
-	}
-
-	@OneToMany(mappedBy = "user")
-	public Collection<Confirmation> getConfirmations() {
-		return confirmations;
-	}
-
-	public void setConfirmations(Collection<Confirmation> confirmations) {
-		this.confirmations = confirmations;
-	}
-
-	@OneToMany(mappedBy = "user")
-	public Collection<Driver> getDrivers() {
-		return drivers;
-	}
-
-	public void setDrivers(Collection<Driver> drivers) {
-		this.drivers = drivers;
-	}
-
-	@OneToMany(mappedBy = "user")
-	public Collection<Manager> getManagers() {
-		return managers;
-	}
-
-	public void setManagers(Collection<Manager> managers) {
-		this.managers = managers;
-	}
-
-	@OneToMany(mappedBy = "user")
-	public Collection<Order> getOrders() {
-		return orders;
-	}
-
-	public void setOrders(Collection<Order> orders) {
-		this.orders = orders;
-	}
-
-	@OneToMany(mappedBy = "user")
-	public Collection<Payment> getPayments() {
-		return payments;
-	}
-
-	public void setPayments(Collection<Payment> payments) {
-		this.payments = payments;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_role", referencedColumnName = "role_id", nullable = false)
-	public Role getRole() {
-		return role;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
 	}
 }
