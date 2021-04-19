@@ -5,20 +5,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.inthebytes.accountservice.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.inthebytes.accountservice.model.LoginUser;
 
 
 public class LoginPrincipal implements UserDetails {
 	
 	private static final long serialVersionUID = -1610064484091786350L;
 
-	private LoginUser user;
+	private User user;
 
-	public LoginPrincipal(LoginUser user) {
+	public LoginPrincipal(User user) {
 		this.user = user;
 	}
 
@@ -26,7 +25,7 @@ public class LoginPrincipal implements UserDetails {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		
-		String r = "ROLE_" + user.getUserRole().getName().toUpperCase();
+		String r = "ROLE_" + user.getRole().getName().toUpperCase();
 		GrantedAuthority auth = new SimpleGrantedAuthority(r);
 		authorities.add(auth);
 		return authorities;

@@ -1,12 +1,11 @@
 package com.inthebytes.accountservice.service;
 
-import com.inthebytes.accountservice.dao.UserConfirmationDao;
+import com.inthebytes.accountservice.dao.ConfirmationDao;
 import com.inthebytes.accountservice.dao.UserDao;
+import com.inthebytes.accountservice.entity.Confirmation;
 import com.inthebytes.accountservice.entity.User;
-import com.inthebytes.accountservice.entity.UserConfirmation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
@@ -15,68 +14,65 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Service("confirmationService")
+@Service
 public class ConfirmationService {
 
 	@Value("${spring.mail.username}")
 	private String mailUserName;
 
-	private final UserDao userDao;
+	@Autowired
+	private UserDao userDao;
 
-	private final UserConfirmationDao userConfirmationDao;
+	@Autowired
+	private ConfirmationDao confirmationDao;
 
-	private final EmailSendService emailSendService;
+	@Autowired
+	private EmailSendService emailSendService;
 
 	private final Integer confirmationWindowSeconds = 60 * 15; // 60 sec * 15 min
 
-	public ConfirmationService(UserDao userDao, UserConfirmationDao userConfirmationDao, EmailSendService emailSendService) {
-		this.userDao = userDao;
-		this.userConfirmationDao = userConfirmationDao;
-		this.emailSendService = emailSendService;
-	}
-
 	@Transactional
-	public ResponseEntity<String> confirmUserAccount(String confirmationToken) {
-		UserConfirmation token = userConfirmationDao.findByConfirmationToken(confirmationToken);
+	public String confirmUserAccount(String confirmationToken) {
+		Confirmation token = confirmationDao.findByConfirmationToken(confirmationToken);
 
 		if (token != null) {
 			if (token.getCreatedDate().toLocalDateTime().plusSeconds(confirmationWindowSeconds).isAfter(LocalDateTime.now())) {
-				User user = userDao.findByUserId(token.getUserId());
+				User user = token.getUser();
 				user.setActive(true);
 				token.setConfirmed(true);
-				userConfirmationDao.save(token);
+				confirmationDao.save(token);
 				userDao.save(user);
-				return new ResponseEntity<>("Account confirmed!", HttpStatus.OK);
+				return "Account confirmed!";
 			} else {
 				// TODO: redirect to obtain a new token
-				return new ResponseEntity<>("Token expired.", HttpStatus.UNAUTHORIZED);
+				return "Token expired.";
 			}
 		} else {
-			return new ResponseEntity<>("Invalid verification token.", HttpStatus.UNAUTHORIZED);
+			return "Invalid verification token.";
 		}
 	}
 
-	public ResponseEntity<String> verifyUser(String email) {
+	public String verifyUser(String email) {
 		User existingUser = userDao.findByEmailIgnoreCase(email);
 
 		if (existingUser == null) {
-			return new ResponseEntity<>("Email doesn't exist", HttpStatus.UNAUTHORIZED);
+			return "Email doesn't exist";
 		}
 
-		UserConfirmation existingUserConfirmation = userConfirmationDao.findUserConfirmationByUserId(existingUser.getUserId());
+		Confirmation existingUserConfirmation = confirmationDao.findConfirmationByUser(existingUser);
 
 		if (existingUserConfirmation != null && existingUserConfirmation.getConfirmed()) {
-			return new ResponseEntity<>("User already confirmed!", HttpStatus.OK);
+			return "User already confirmed!";
 		}
 
 		// Create confirmation
-		UserConfirmation userConfirmation = new UserConfirmation();
-		userConfirmation.setUserId(existingUser.getUserId());
-		userConfirmation.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-		userConfirmation.setConfirmationToken(UUID.randomUUID().toString());
-		userConfirmation.setUserByUserId(existingUser);
-		userConfirmation.setConfirmed(false);
-		userConfirmationDao.save(userConfirmation);
+		Confirmation confirmation = new Confirmation();
+		confirmation.setUser(existingUser);
+		confirmation.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+		confirmation.setConfirmationToken(UUID.randomUUID().toString());
+		confirmation.setUser(existingUser);
+		confirmation.setConfirmed(false);
+		confirmationDao.save(confirmation);
 
 		// Create email message
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -84,10 +80,10 @@ public class ConfirmationService {
 		mailMessage.setSubject("Complete Registration!");
 		mailMessage.setFrom(mailUserName);
 		mailMessage.setText("To confirm your account, please click here : "
-				+"http://localhost:8080/user/confirm-account?token="+ userConfirmation.getConfirmationToken());
+				+"http://localhost:8080/user/confirm-account?token="+ confirmation.getConfirmationToken());
 
 		emailSendService.sendMail(mailMessage);
 
-		return new ResponseEntity<>("Account created. Please check your email to verify your account.", HttpStatus.CREATED);
+		return "Account created. Please check your email to verify your account.";
 	}
 }
