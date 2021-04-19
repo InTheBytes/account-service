@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ConfirmationDao extends JpaRepository<Confirmation, Integer> {
+public interface ConfirmationDao extends JpaRepository<Confirmation, Long> {
 	Confirmation findByConfirmationToken(String confirmationToken);
 	Confirmation findConfirmationByUser(User user);
 }

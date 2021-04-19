@@ -6,8 +6,6 @@ import com.inthebytes.accountservice.entity.Confirmation;
 import com.inthebytes.accountservice.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +32,7 @@ public class ConfirmationService {
 	private final Integer confirmationWindowSeconds = 60 * 15; // 60 sec * 15 min
 
 	@Transactional
-	public ResponseEntity<String> confirmUserAccount(String confirmationToken) {
+	public String confirmUserAccount(String confirmationToken) {
 		Confirmation token = confirmationDao.findByConfirmationToken(confirmationToken);
 
 		if (token != null) {
@@ -44,27 +42,27 @@ public class ConfirmationService {
 				token.setConfirmed(true);
 				confirmationDao.save(token);
 				userDao.save(user);
-				return new ResponseEntity<>("Account confirmed!", HttpStatus.OK);
+				return "Account confirmed!";
 			} else {
 				// TODO: redirect to obtain a new token
-				return new ResponseEntity<>("Token expired.", HttpStatus.UNAUTHORIZED);
+				return "Token expired.";
 			}
 		} else {
-			return new ResponseEntity<>("Invalid verification token.", HttpStatus.UNAUTHORIZED);
+			return "Invalid verification token.";
 		}
 	}
 
-	public ResponseEntity<String> verifyUser(String email) {
+	public String verifyUser(String email) {
 		User existingUser = userDao.findByEmailIgnoreCase(email);
 
 		if (existingUser == null) {
-			return new ResponseEntity<>("Email doesn't exist", HttpStatus.UNAUTHORIZED);
+			return "Email doesn't exist";
 		}
 
 		Confirmation existingUserConfirmation = confirmationDao.findConfirmationByUser(existingUser);
 
 		if (existingUserConfirmation != null && existingUserConfirmation.getConfirmed()) {
-			return new ResponseEntity<>("User already confirmed!", HttpStatus.OK);
+			return "User already confirmed!";
 		}
 
 		// Create confirmation
@@ -86,6 +84,6 @@ public class ConfirmationService {
 
 		emailSendService.sendMail(mailMessage);
 
-		return new ResponseEntity<>("Account created. Please check your email to verify your account.", HttpStatus.CREATED);
+		return "Account created. Please check your email to verify your account.";
 	}
 }

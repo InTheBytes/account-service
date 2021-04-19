@@ -16,7 +16,7 @@ public class Confirmation {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	@Column(name = "token_id", nullable = false)
-	private Integer tokenId;
+	private Long tokenId;
 
 	@Basic
 	@Column(name = "confirmation_token", nullable = false, length = 256)
@@ -34,10 +34,10 @@ public class Confirmation {
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
 	private User user;
 
-	public Integer getTokenId() {
+	public Long getTokenId() {
 		return tokenId;
 	}
-	public void setTokenId(Integer tokenId) {
+	public void setTokenId(Long tokenId) {
 		this.tokenId = tokenId;
 	}
 
