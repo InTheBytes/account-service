@@ -8,27 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.inthebytes.accountservice.dao.UserAccountDAO;
-import com.inthebytes.accountservice.model.UserAccount;
+import com.inthebytes.accountservice.dao.UserDao;
+import com.inthebytes.accountservice.entity.User;
 
 @Service
 public class RegistrationService {
 	
 	@Autowired
-	UserAccountDAO repo;
+	UserDao repo;
 
-	public UserAccount RegisterNewAccount(UserAccount account) throws SQLException {
+	public User RegisterNewUser(User newUser) throws SQLException {
 		
-			List<UserAccount> accounts = repo.findAll();
+			List<User> accounts = repo.findAll();
 			List<String> emails = new ArrayList<String>();
 			List<String> usernames = new ArrayList<String>();
 			accounts.forEach(a -> {emails.add(a.getEmail()); usernames.add(a.getUsername());});
-			if (emails.contains(account.getEmail()) || usernames.contains(account.getUsername())) {
+			if (emails.contains(newUser.getEmail()) || usernames.contains(newUser.getUsername())) {
 				return null;
 			} else {
-				String plaintext = account.getPassword();
-				account.setPassword(new BCryptPasswordEncoder().encode(plaintext));
-				return repo.save(account);
+				String plaintext = newUser.getPassword();
+				newUser.setPassword(new BCryptPasswordEncoder().encode(plaintext));
+				return repo.save(newUser);
 			}
 	}
 }

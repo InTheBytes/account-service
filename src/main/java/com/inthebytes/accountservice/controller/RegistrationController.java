@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inthebytes.accountservice.model.UserAccount;
+import com.inthebytes.accountservice.entity.User;
 import com.inthebytes.accountservice.service.RegistrationService;
 
 
@@ -21,18 +21,18 @@ public class RegistrationController {
 	RegistrationService service;
 	@RequestMapping(path = "/register", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<UserAccount> registerUser(@RequestBody UserAccount account) {
+	public ResponseEntity<User> registerUser(@RequestBody User newUser) {
 		
-		ResponseEntity<UserAccount> response;
+		ResponseEntity<User> response;
 		try {
-				UserAccount updated = service.RegisterNewAccount(account);
+				User updated = service.RegisterNewUser(newUser);
 			if (updated == null) {
-				response = new ResponseEntity<UserAccount>(updated, HttpStatus.CONFLICT);
+				response = new ResponseEntity<User>(updated, HttpStatus.CONFLICT);
 			} else {
-				response = new ResponseEntity<UserAccount>(updated, HttpStatus.CREATED);
+				response = new ResponseEntity<User>(updated, HttpStatus.CREATED);
 			}
 		} catch (Exception e) {
-			response = new ResponseEntity<UserAccount>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
 		}
 		return response;
 	}
