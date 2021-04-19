@@ -19,7 +19,6 @@ public class RegistrationService {
 
 	public UserAccount RegisterNewAccount(UserAccount account) throws SQLException {
 		
-		try {
 			List<UserAccount> accounts = repo.findAll();
 			List<String> emails = new ArrayList<String>();
 			List<String> usernames = new ArrayList<String>();
@@ -29,15 +28,7 @@ public class RegistrationService {
 			} else {
 				String plaintext = account.getPassword();
 				account.setPassword(new BCryptPasswordEncoder().encode(plaintext));
-				System.out.println("First name: " + account.getFirstName());
-				System.out.println("Email: " + account.getEmail());
-				System.out.println("Role: " + account.getUserRole());
 				return repo.save(account);
 			}
-		}catch(Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-		
 	}
 }
