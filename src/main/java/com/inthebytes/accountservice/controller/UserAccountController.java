@@ -1,11 +1,21 @@
 package com.inthebytes.accountservice.controller;
 
+import com.inthebytes.accountservice.dto.UserDto;
 import com.inthebytes.accountservice.service.ConfirmationService;
+import com.inthebytes.accountservice.service.UserCrudService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,6 +27,9 @@ public class UserAccountController {
 
 	@Autowired
 	private ConfirmationService confirmationService;
+	
+	@Autowired
+	private UserCrudService userService;
 
 	@PutMapping(path="/confirm-account", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	@ResponseBody
@@ -52,4 +65,31 @@ public class UserAccountController {
 				return new ResponseEntity<>("Server error.", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping(value="/{user-id}")
+	public ResponseEntity<UserDto> getUser(@PathVariable("user-id") Long userId) {
+		return null;
+	}
+	
+	@GetMapping(value="")
+	public ResponseEntity<List<UserDto>> getUsers(@RequestParam("page-size") Integer pageSize,
+			@RequestParam("page") Integer page) {
+		return null;
+	}
+	
+	@PutMapping(value="/{user-id}")
+	public ResponseEntity<UserDto> updateUser(@PathVariable("user-id") Long userId, @RequestBody UserDto info) {
+		return null;
+	}
+	
+	@PostMapping(value="")
+	public ResponseEntity<UserDto> createUser(@RequestBody UserDto user) {
+		return null;
+	}
+	
+	@DeleteMapping(value="/{user-id}")
+	public ResponseEntity<UserDto> deactiveUser(@PathVariable("user-id") Long userId) {
+		return null;
+	}
+	
 }
