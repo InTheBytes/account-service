@@ -1,4 +1,4 @@
-package com.inthebytes.accountservice.mapper;
+package com.inthebytes.accountservice.service;
 
 import org.springframework.stereotype.Service;
 
@@ -8,7 +8,7 @@ import com.inthebytes.accountservice.entity.Role;
 import com.inthebytes.accountservice.entity.User;
 
 @Service
-public class UserMapper {
+public class UserMapperService {
 
 	public UserDto convert(User user) {
 		UserDto result = new UserDto();
