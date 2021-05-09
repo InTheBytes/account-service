@@ -11,38 +11,29 @@ import com.inthebytes.accountservice.entity.User;
 public class UserMapperService {
 
 	public UserDto convert(User user) {
-		UserDto result = new UserDto();
+		UserDto result = new UserDto(convert(user.getRole()), user.getUsername(), user.getEmail(), user.getActive());
 		result.setUserId(user.getUserId());
-		result.setUsername(user.getUsername());
-		result.setPassword(user.getPassword());
-		result.setEmail(user.getEmail());
 		result.setPhone(user.getPhone());
-		result.setIsActive(user.getActive());
 		result.setFirstName(user.getFirstName());
 		result.setLastName(user.getLastName());
-		result.setRole(convert(user.getRole()));
-		return null;
+		return result;
 	}
 	
 	public User convert(UserDto user) {
 		User result = new User();
-		result.setUserId(user.getUserId());
-		result.setUsername(user.getUsername());
-		result.setPassword(user.getPassword());
-		result.setEmail(user.getEmail());
-		result.setPhone(user.getPhone());
-		result.setActive(user.getIsActive());
-		result.setFirstName(user.getFirstName());
-		result.setLastName(user.getLastName());
-		result.setRole(convert(user.getRole()));
-		return null;
+		if (user.getUserId() != null) result.setUserId(user.getUserId());
+		if (user.getUsername() != null) result.setUsername(user.getUsername());
+		if (user.getEmail() != null) result.setEmail(user.getEmail());
+		if (user.getPhone() != null) result.setPhone(user.getPhone());
+		if (user.getIsActive() != null) result.setActive(user.getIsActive());
+		if (user.getFirstName() != null) result.setFirstName(user.getFirstName());
+		if (user.getLastName() != null) result.setLastName(user.getLastName());
+		if (user.getRole() != null) result.setRole(convert(user.getRole()));
+		return result;
 	}
 	
 	public RoleDto convert(Role role) {
-		RoleDto result = new RoleDto();
-		result.setRoleId(role.getRoleId());
-		result.setName(role.getName());
-		return result;
+		return new RoleDto(role.getRoleId(), role.getName());
 	}
 	
 	public Role convert(RoleDto role) {

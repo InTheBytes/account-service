@@ -41,23 +41,15 @@ public class UserCrudService {
 		return (user == null) ? null : mapper.convert(user);
 	}
 	
-	public UserDto updateUser(UserDto user) {
-		User userEntity = repo.findByUserId(user.getUserId());
-		if (userEntity == null)
-			return null;
-		else {
-			userEntity = mapper.convert(user);
-			return mapper.convert(repo.save(userEntity));
-		}
-	}
-	
 	public UserDto updateUser(UserDto user, Long userId) {
 		User userEntity = repo.findByUserId(userId);
 		if (userEntity == null)
 			return null;
 		else {
 			user.setUserId(userId);
+			String password = userEntity.getPassword();
 			userEntity = mapper.convert(user);
+			userEntity.setPassword(password);
 			return mapper.convert(repo.save(userEntity));
 		}
 	}

@@ -6,6 +6,12 @@ import org.springframework.lang.NonNull;
 
 public class RoleDto {
 
+	public RoleDto(Long roleId, String name) {
+		super();
+		this.roleId = roleId;
+		this.name = name;
+	}
+
 	@Id
 	@NonNull
 	private Long roleId;
