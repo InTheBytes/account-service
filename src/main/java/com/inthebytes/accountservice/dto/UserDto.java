@@ -1,6 +1,6 @@
-package com.inthebytes.accountservice.model;
+package com.inthebytes.accountservice.dto;
 
-public class LoginViewModel {
+public class UserDto {
 	private String username;
 	private String password;
 	public String getUsername() {

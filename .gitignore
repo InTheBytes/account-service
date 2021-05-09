@@ -1,9 +1,17 @@
+<<<<<<< HEAD
+!accountservice.iml
+=======
+>>>>>>> develop
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+<<<<<<< HEAD
+bin/
+=======
 lib/
+>>>>>>> develop
 
 ### STS ###
 .apt_generated
@@ -32,3 +40,9 @@ build/
 
 ### VS Code ###
 .vscode/
+<<<<<<< HEAD
+
+### Database ###
+**/src/main/resources/secure.properties
+=======
+>>>>>>> develop
