@@ -11,25 +11,29 @@ import com.sun.istack.Nullable;
 
 public class UserDto {
 	
-	public UserDto(RoleDto role, String username, @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$") String email,
-			Boolean isActive) {
-		super();
-		this.role = role;
-		this.username = username;
-		this.email = email;
-		this.isActive = isActive;
-	}
+//	public UserDto(RoleDto role, String username, @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$") String email,
+//			Boolean isActive) {
+//		super();
+//		this.role = role;
+//		this.username = username;
+//		this.email = email;
+//		this.isActive = isActive;
+//	}
 
 	@Id
 	private Long userId;
 	
-	@NonNull
+//	@NonNull
 	private RoleDto role;
 	
-	@NonNull
+//	@NonNull
 	private String username;
 	
-	@NonNull
+	@Nullable
+	@JsonIgnore
+	private String password;
+	
+//	@NonNull
 	@Pattern(regexp="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
 	private String email;
 	
@@ -44,7 +48,7 @@ public class UserDto {
 	@Nullable
 	private String lastName;
 	
-	@NonNull
+//	@NonNull
 	private Boolean isActive;
 	
 	public Long getUserId() {
@@ -69,6 +73,14 @@ public class UserDto {
 	
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getEmail() {
