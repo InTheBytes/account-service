@@ -1,6 +1,5 @@
-package com.inthebytes.accountservice.login;
+package com.inthebytes.accountservice;
 
-import com.inthebytes.accountservice.service.LogoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +14,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.inthebytes.accountservice.login.AuthenticationFilter;
 import com.inthebytes.accountservice.service.LoginDetailsService;
+import com.inthebytes.accountservice.service.LogoutService;
 
-@EnableWebSecurity
 @Configuration
-public class LoginSecurityConfig extends WebSecurityConfigurerAdapter{
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private LoginDetailsService loginDetailService;
@@ -30,37 +31,45 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter{
 	protected void configure(AuthenticationManagerBuilder auth) {
 		auth.authenticationProvider(authenticationProvider());
 	}
-	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.csrf()
-				.disable()
-		 	.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-		 	// Login
-			.and()
-		 	    .addFilter(new AuthenticationFilter(authenticationManager()))
-				.authorizeRequests()
-				.antMatchers(HttpMethod.POST, "/login").permitAll()
+    @Override
+    protected void configure(HttpSecurity security) throws Exception {
+    	//TODO: Actively populate with restrictions
+    	security
+		.csrf()
+			.disable()
+	 	.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-			// Logout
-			.and()
-				.logout()
-				.logoutUrl("/logout")
-				.addLogoutHandler(logoutHandler)
-				.logoutSuccessUrl("/")
-				.invalidateHttpSession(true)
-				.deleteCookies("remove");
-	}
-	
-	@Bean
-    PasswordEncoder passwordEncoder(){
+	 	// Login
+		.and()
+	 	    .addFilter(new AuthenticationFilter(authenticationManager()))
+			.authorizeRequests()
+			.antMatchers(HttpMethod.POST, "/login").permitAll()
+			
+		// End Point Security	
+			.antMatchers("/public").permitAll()
+	        .antMatchers("/authticated").authenticated()
+	        .antMatchers("/admin").hasRole("ADMIN")
+	        .antMatchers("/user").hasAnyRole("ADMIN","USER")
+	        .and().httpBasic()
+
+		// Logout
+		.and()
+			.logout()
+			.logoutUrl("/logout")
+			.addLogoutHandler(logoutHandler)
+			.logoutSuccessUrl("/")
+			.invalidateHttpSession(true)
+			.deleteCookies("remove");
+    }
+    
+    @Bean
+    public PasswordEncoder passwordEncoder(){
         return  new BCryptPasswordEncoder();
     }
-	
-	@Bean
+    
+    @Bean
 	DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider dap = new DaoAuthenticationProvider();
 		dap.setPasswordEncoder(passwordEncoder());
@@ -73,5 +82,4 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter{
 	    return super.authenticationManagerBean();
 	    
 	}
-
 }
