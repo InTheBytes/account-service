@@ -1,6 +1,7 @@
 package com.inthebytes.accountservice.service;
 
 import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -13,30 +14,30 @@ public class ConfirmationServiceTest {
 	@Autowired
 	ConfirmationService confirmationService;
 
-	@org.junit.Test
+	@Test
 	public void test_confirmUserAccount_confirm_positive() {
 		// Need to change data.sql to reflect correct date
-		assertEquals(200, confirmationService.confirmUserAccount("validtoken").getStatusCodeValue());
+		assertEquals("Account confirmed!", confirmationService.confirmUserAccount("validtoken"));
 	}
 
-	@org.junit.Test
+	@Test
 	public void test_confirmUserAccount_expired_negative() {
-		assertEquals(401, confirmationService.confirmUserAccount("123").getStatusCodeValue());
+		assertEquals("Token expired.", confirmationService.confirmUserAccount("123"));
 	}
 
 
-	@org.junit.Test
+	@Test
 	public void test_verifyUser_validEmail_positive() {
-		assertEquals(201, confirmationService.verifyUser("mosaab.aljarih@smoothstack.com").getStatusCodeValue());
+		assertEquals("Account created. Please check your email to verify your account.", confirmationService.verifyUser("mosaab.aljarih@smoothstack.com"));
 	}
 
-	@org.junit.Test
+	@Test
 	public void test_verifyUser_emailNotExist_negative() {
-		assertEquals(401, confirmationService.verifyUser("test@smoothstack.com").getStatusCodeValue());
+		assertEquals("Email doesn't exist", confirmationService.verifyUser("test@smoothstack.com"));
 	}
 
-	@org.junit.Test
+	@Test
 	public void test_verifyUser_userAlreadyVerified_negative() {
-		assertEquals(200, confirmationService.verifyUser("verified@smoothstack.com").getStatusCodeValue());
+		assertEquals("User already confirmed!", confirmationService.verifyUser("verified@smoothstack.com"));
 	}
 }
