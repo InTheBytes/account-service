@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import software.amazon.awssdk.services.ses.model.SesException;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/user")
@@ -39,17 +43,22 @@ public class UserAccountController {
 	@PutMapping(value="/verify", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	@ResponseBody
 	public ResponseEntity<String> putVerifyUser(@RequestParam("email") String email) {
-		String result = confirmationService.verifyUser(email);
 
-		switch (result) {
-			case "Email doesn't exist":
-				return new ResponseEntity<>("Email doesn't exist", HttpStatus.UNAUTHORIZED);
-			case "User already confirmed!":
-				return new ResponseEntity<>("User already confirmed!", HttpStatus.OK);
-			case "Account created. Please check your email to verify your account.":
-				return new ResponseEntity<>("Account created. Please check your email to verify your account.", HttpStatus.CREATED);
-			default:
-				return new ResponseEntity<>("Server error.", HttpStatus.INTERNAL_SERVER_ERROR);
+		try {
+			String result = confirmationService.verifyUser(email);
+
+			switch (result) {
+				case "Email doesn't exist":
+					return new ResponseEntity<>("Email doesn't exist", HttpStatus.UNAUTHORIZED);
+				case "User already confirmed!":
+					return new ResponseEntity<>("User already confirmed!", HttpStatus.OK);
+				case "Account created. Please check your email to verify your account.":
+					return new ResponseEntity<>("Account created. Please check your email to verify your account.", HttpStatus.CREATED);
+				default:
+					return new ResponseEntity<>("Server error.", HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} catch (MessagingException | SesException | IOException e) {
+			return new ResponseEntity<>("Server error.", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }
