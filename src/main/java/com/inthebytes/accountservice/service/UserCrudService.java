@@ -3,6 +3,7 @@ package com.inthebytes.accountservice.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,16 @@ public class UserCrudService {
 	public List<List<UserDto>> readUsers(Integer pageSize) {
 		List<UserDto> manuscript = readUsers();
 		Map<Integer, List<UserDto>> pages = manuscript.stream().collect(Collectors.groupingBy(x -> manuscript.indexOf(x)/pageSize));
+		List<List<UserDto>> paginated = new ArrayList<List<UserDto>>(pages.values());
+		return paginated;
+	}
+	
+	public List<List<UserDto>> readActiveUsers(Integer pageSize) {
+		List<UserDto> manuscript = readUsers().stream()
+				.filter((x) -> x.getIsActive())
+				.collect(Collectors.toList());
+		Map<Integer, List<UserDto>> pages = manuscript.stream()
+				.collect(Collectors.groupingBy(x -> manuscript.indexOf(x)/pageSize));
 		List<List<UserDto>> paginated = new ArrayList<List<UserDto>>(pages.values());
 		return paginated;
 	}

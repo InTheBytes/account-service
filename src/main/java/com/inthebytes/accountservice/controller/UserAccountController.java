@@ -77,10 +77,26 @@ public class UserAccountController {
 	}
 	
 	@GetMapping(value="")
-	public ResponseEntity<List<UserDto>> getUsers(
+	public ResponseEntity<List<UserDto>> getAllUsers(
 			@RequestParam("page-size") Integer pageSize,
 			@RequestParam("page") Integer page) {
 		List<List<UserDto>> users = userService.readUsers(pageSize);
+		if (users == null || users.size() <= 0)
+			return ResponseEntity.noContent().build();
+		else {
+			HttpHeaders headers = new HttpHeaders();
+			headers.set("page", Integer.toString(page));
+			headers.set("total-pages", Integer.toString(users.size()));
+			headers.set("Access-Control-Expose-Headers", "page, total-pages");
+			return ResponseEntity.ok().headers(headers).body(users.get(page-1));
+		}
+	}
+	
+	@GetMapping(value="/active")
+	public ResponseEntity<List<UserDto>> getActiveUsers(
+			@RequestParam("page-size") Integer pageSize,
+			@RequestParam("page") Integer page) {
+		List<List<UserDto>> users = userService.readActiveUsers(pageSize);
 		if (users == null || users.size() <= 0)
 			return ResponseEntity.noContent().build();
 		else {
