@@ -38,7 +38,7 @@ public class ConfirmationService {
 		Confirmation token = confirmationDao.findByConfirmationToken(confirmationToken);
 
 		if (token != null) {
-			if (token.getCreatedDate().toLocalDateTime().plusSeconds(confirmationWindowSeconds).isAfter(LocalDateTime.now())) {
+			if (!token.getConfirmed() && token.getCreatedDate().toLocalDateTime().plusSeconds(confirmationWindowSeconds).isAfter(LocalDateTime.now())) {
 				User user = token.getUser();
 				user.setActive(true);
 				token.setConfirmed(true);
