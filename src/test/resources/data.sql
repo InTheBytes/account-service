@@ -14,4 +14,4 @@ INSERT INTO confirmation (token_id, confirmation_token, user_id, created_date, i
 	VALUES (1, '123', 2, '2021-04-06 11:00:00', 1);
 
 INSERT INTO confirmation (token_id, confirmation_token, user_id, created_date, is_confirmed)
-VALUES (2, 'validtoken', 3, NOW(), 0);
+	VALUES (2, 'validtoken', 3, NOW(), 0);
