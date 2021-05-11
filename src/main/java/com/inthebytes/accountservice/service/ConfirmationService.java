@@ -6,10 +6,12 @@ import com.inthebytes.accountservice.entity.Confirmation;
 import com.inthebytes.accountservice.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.ses.model.SesException;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,7 +19,7 @@ import java.util.UUID;
 @Service
 public class ConfirmationService {
 
-	@Value("${spring.mail.username}")
+	@Value("${SL_EMAIL}")
 	private String mailUserName;
 
 	@Autowired
@@ -36,7 +38,7 @@ public class ConfirmationService {
 		Confirmation token = confirmationDao.findByConfirmationToken(confirmationToken);
 
 		if (token != null) {
-			if (token.getCreatedDate().toLocalDateTime().plusSeconds(confirmationWindowSeconds).isAfter(LocalDateTime.now())) {
+			if (!token.getConfirmed() && token.getCreatedDate().toLocalDateTime().plusSeconds(confirmationWindowSeconds).isAfter(LocalDateTime.now())) {
 				User user = token.getUser();
 				user.setActive(true);
 				token.setConfirmed(true);
@@ -52,7 +54,7 @@ public class ConfirmationService {
 		}
 	}
 
-	public String verifyUser(String email) {
+	public String verifyUser(String email) throws MessagingException, SesException, IOException {
 		User existingUser = userDao.findByEmailIgnoreCase(email);
 
 		if (existingUser == null) {
@@ -74,15 +76,15 @@ public class ConfirmationService {
 		confirmation.setConfirmed(false);
 		confirmationDao.save(confirmation);
 
-		// Create email message
-		SimpleMailMessage mailMessage = new SimpleMailMessage();
-		mailMessage.setTo(existingUser.getEmail());
-		mailMessage.setSubject("Complete Registration!");
-		mailMessage.setFrom(mailUserName);
-		mailMessage.setText("To confirm your account, please click here : "
-				+"http://localhost:8080/user/confirm-account?token="+ confirmation.getConfirmationToken());
+		// The email body for non-HTML email clients
+		String bodyText = "To confirm your account, please follow the link: \r\n"
+				+"http://localhost:8080/user/confirm-account?token="+ confirmation.getConfirmationToken();
 
-		emailSendService.sendMail(mailMessage);
+		// The HTML body of the email
+		String bodyHTML = "<html>" + "<head></head>" + "<body>" + "<h1>To confirm your account, please follow the link</h1>"
+				+ "<a href=\"http://localhost:8080/user/confirm-account?token="+ confirmation.getConfirmationToken() +"\">Confirmation Link</a>" + "</body>" + "</html>";
+
+		emailSendService.send(mailUserName, existingUser.getEmail(), "Complete Registration", bodyText, bodyHTML);
 
 		return "Account created. Please check your email to verify your account.";
 	}

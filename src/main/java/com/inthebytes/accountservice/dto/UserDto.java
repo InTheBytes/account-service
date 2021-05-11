@@ -4,36 +4,22 @@ import javax.persistence.Id;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.springframework.lang.NonNull;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.Nullable;
 
 public class UserDto {
-	
-//	public UserDto(RoleDto role, String username, @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$") String email,
-//			Boolean isActive) {
-//		super();
-//		this.role = role;
-//		this.username = username;
-//		this.email = email;
-//		this.isActive = isActive;
-//	}
 
 	@Id
 	private Long userId;
-	
-//	@NonNull
+
 	private RoleDto role;
 	
-//	@NonNull
 	private String username;
 	
 	@Nullable
 	@JsonIgnore
 	private String password;
 	
-//	@NonNull
 	@Pattern(regexp="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
 	private String email;
 	
@@ -48,7 +34,6 @@ public class UserDto {
 	@Nullable
 	private String lastName;
 	
-//	@NonNull
 	private Boolean isActive;
 	
 	public Long getUserId() {
