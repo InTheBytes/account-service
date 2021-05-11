@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.inthebytes.accountservice.dto.UserDto;
 import com.inthebytes.accountservice.entity.User;
 import com.inthebytes.accountservice.service.RegistrationService;
 
@@ -32,10 +33,10 @@ public class RegistrationController {
 
 	@RequestMapping(path = "/register", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<User> registerUser(@RequestBody User newUser) {
+	public ResponseEntity<UserDto> registerUser(@RequestBody User newUser) {
 
-		ResponseEntity<User> response;
-		User updated = null;
+		ResponseEntity<UserDto> response;
+		UserDto updated = null;
 		try {
 
 			updated = service.RegisterNewUser(newUser);

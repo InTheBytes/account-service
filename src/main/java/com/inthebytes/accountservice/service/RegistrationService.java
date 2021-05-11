@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.inthebytes.accountservice.dao.UserDao;
+import com.inthebytes.accountservice.dto.UserDto;
 import com.inthebytes.accountservice.entity.User;
 
 @Service
@@ -16,8 +17,11 @@ public class RegistrationService {
 	
 	@Autowired
 	UserDao repo;
+	
+	@Autowired
+	UserMapperService mapper;
 
-	public User RegisterNewUser(User newUser) throws SQLException {
+	public UserDto RegisterNewUser(User newUser) throws SQLException {
 		
 			List<User> accounts = repo.findAll();
 			List<String> emails = new ArrayList<String>();
@@ -28,7 +32,7 @@ public class RegistrationService {
 			} else {
 				String plaintext = newUser.getPassword();
 				newUser.setPassword(new BCryptPasswordEncoder().encode(plaintext));
-				return repo.save(newUser);
+				return mapper.convert(repo.save(newUser));
 			}
 	}
 }
