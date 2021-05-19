@@ -21,7 +21,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inthebytes.accountservice.dto.BareUserDto;
-import com.inthebytes.accountservice.dto.UserDto;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	
