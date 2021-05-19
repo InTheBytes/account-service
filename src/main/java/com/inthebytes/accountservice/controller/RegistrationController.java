@@ -22,7 +22,7 @@ import software.amazon.awssdk.services.ses.model.MessageRejectedException;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin("http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"})
 public class RegistrationController {
 
 	@Autowired

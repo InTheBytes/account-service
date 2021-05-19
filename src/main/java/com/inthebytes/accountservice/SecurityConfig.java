@@ -17,6 +17,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.inthebytes.accountservice.login.AuthenticationFilter;
 import com.inthebytes.accountservice.service.LoginDetailsService;
 import com.inthebytes.accountservice.service.LogoutService;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -34,10 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity security) throws Exception {
+
     	//TODO: Actively populate with restrictions
-    	security
-		.csrf()
-			.disable()
+	    security.csrf().disable()
+			    .cors()
+		.and()
 	 	.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
@@ -45,29 +52,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 	 	    .addFilter(new AuthenticationFilter(authenticationManager()))
 			.authorizeRequests()
-			.antMatchers(HttpMethod.POST, "/login").permitAll()
-			
-		// End Point Security	
-			.antMatchers("/public").permitAll()
-	        .antMatchers("/authticated").authenticated()
-	        .antMatchers("/admin").hasRole("ADMIN")
+			    .antMatchers("/admin/**").hasRole("ADMIN")
+		        .antMatchers( "/authenticated/**").authenticated()
+			    .antMatchers(HttpMethod.POST, "/login").permitAll()
+			    .antMatchers("/public/**").permitAll()
 	        
 	    // End Goal for Security
 //	        .antMatchers("/user").hasAnyRole("ADMIN","USER")
 	        
 	    //Bypass for development
 	        .antMatchers("/user").permitAll()
-	        
-	        .and().httpBasic()
 
-		// Logout
-		.and()
-			.logout()
-			.logoutUrl("/logout")
-			.addLogoutHandler(logoutHandler)
-			.logoutSuccessUrl("/")
-			.invalidateHttpSession(true)
-			.deleteCookies("remove");
+	    // Logout
+	    .and()
+		    .logout()
+		    .logoutUrl("/logout")
+		    .addLogoutHandler(logoutHandler)
+		    .logoutSuccessUrl("/")
+		    .invalidateHttpSession(true)
+		    .deleteCookies("remove")
+
+        .and().httpBasic();
     }
     
     @Bean
