@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.inthebytes.accountservice.login.AuthenticationFilter;
+import com.inthebytes.accountservice.login.AuthorizationFilter;
 import com.inthebytes.accountservice.service.LoginDetailsService;
 import com.inthebytes.accountservice.service.LogoutService;
 import org.springframework.web.cors.CorsConfiguration;
@@ -51,6 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 	// Login
 		.and()
 	 	    .addFilter(new AuthenticationFilter(authenticationManager()))
+	 	    .addFilter(new AuthorizationFilter(authenticationManager()))
 			.authorizeRequests()
 			    .antMatchers("/admin/**").hasRole("ADMIN")
 		        .antMatchers( "/authenticated/**").authenticated()
