@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { dockerfile true }
     tools {
         maven 'Maven'
         jdk 'Java JDK'
@@ -30,13 +30,17 @@ pipeline {
         }
         stage('Dockerize') {
             steps {
-                docker.build('accountservice')
+                node {
+                    docker.build('accountservice')
+                }
             }
         }
         stage('Push ECR') {
             steps {
-                docker.withRegistry('https://241465518750.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-1:demo-ecr-credentials') {
-                    docker.image('accountservice').push('latest')
+                node {
+                    docker.withRegistry('https://241465518750.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-1:demo-ecr-credentials') {
+                        docker.image('accountservice').push('latest')
+                    }
                 }
             }
         }
