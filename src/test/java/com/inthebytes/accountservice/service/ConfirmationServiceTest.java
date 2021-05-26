@@ -60,7 +60,7 @@ public class ConfirmationServiceTest {
 	}
 
 	@Test
-	public void test_confirmUserAccount_confisrm_positive() {
+	public void test_confirmUserAccount_confirm_positive() {
 		// Need to change data.sql to reflect correct date
 		assertEquals("Account confirmed!", confirmationService.confirmUserAccount("validtoken"));
 	}

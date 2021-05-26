@@ -3,6 +3,7 @@ pipeline {
     tools {
         maven 'Maven'
         jdk 'Java JDK'
+        docker 'Docker'
     }
     stages {
         stage('Clean and Test target') {
@@ -25,6 +26,18 @@ pipeline {
         stage('Await Quality Gateway') {
             steps {
                 waitForQualityGate abortPipeline: true
+            }
+        }
+        stage('Dockerize') {
+            steps {
+                docker.build('accountservice')
+            }
+        }
+        stage('Push ECR') {
+            steps {
+                docker.withRegistry('https://241465518750.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-1:demo-ecr-credentials') {
+                    docker.image('accountservice').push('latest')
+                }
             }
         }
     }
