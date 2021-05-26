@@ -3,7 +3,7 @@ pipeline {
     tools {
         maven 'Maven'
         jdk 'Java JDK'
-        docker 'Docker'
+        dockerTool 'Docker'
     }
     stages {
         stage('Clean and Test target') {
