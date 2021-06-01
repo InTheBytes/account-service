@@ -87,7 +87,7 @@ public class ConfirmationServiceTest {
 	
 	private User getUser(Boolean alreadyConfirmed) {
 		User user = new User();
-		user.setUserId((alreadyConfirmed)? 1L : 2L);
+		user.setUserId((alreadyConfirmed)? "1" : "2");
 		return user;
 	}
 	

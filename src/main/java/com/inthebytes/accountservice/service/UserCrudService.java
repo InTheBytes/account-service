@@ -47,12 +47,12 @@ public class UserCrudService {
 		return paginated;
 	}
 	
-	public UserDto readUser(Long userId) {
+	public UserDto readUser(String userId) {
 		User user = repo.findByUserId(userId);
 		return (user == null) ? null : mapper.convert(user);
 	}
 	
-	public UserDto updateUser(UserDto user, Long userId) {
+	public UserDto updateUser(UserDto user, String userId) {
 		User userEntity = repo.findByUserId(userId);
 		if (userEntity == null)
 			return null;
@@ -65,7 +65,7 @@ public class UserCrudService {
 		}
 	}
 	
-	public UserDto deleteUser(Long userId) {
+	public UserDto deleteUser(String userId) {
 		User user = repo.findByUserId(userId);
 		if (user == null)
 			return null;

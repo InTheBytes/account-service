@@ -10,7 +10,7 @@ import com.sun.istack.Nullable;
 public class UserDto {
 
 	@Id
-	private Long userId;
+	private String userId;
 
 	private RoleDto role;
 	
@@ -36,11 +36,11 @@ public class UserDto {
 	
 	private Boolean isActive;
 	
-	public Long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

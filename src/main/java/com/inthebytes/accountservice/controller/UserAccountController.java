@@ -30,7 +30,7 @@ public class UserAccountController {
 	private UserCrudService userService;
 	
 	@GetMapping(value="/{user-id}")
-	public ResponseEntity<UserDto> getUser(@PathVariable("user-id") Long userId) {
+	public ResponseEntity<UserDto> getUser(@PathVariable("user-id") String userId) {
 		UserDto result = userService.readUser(userId);
 		return (result == null) ? ResponseEntity.status(HttpStatus.NOT_FOUND).build() : ResponseEntity.ok().body(result);
 	}
@@ -68,13 +68,13 @@ public class UserAccountController {
 	}
 	
 	@PutMapping(value="/{user-id}")
-	public ResponseEntity<UserDto> updateUser(@PathVariable("user-id") Long userId, @Valid @RequestBody UserDto info) {
+	public ResponseEntity<UserDto> updateUser(@PathVariable("user-id") String userId, @Valid @RequestBody UserDto info) {
 		UserDto result = userService.updateUser(info, userId);
 		return (result == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(result);
 	}
 	
 	@DeleteMapping(value="/{user-id}")
-	public ResponseEntity<UserDto> deactiveUser(@PathVariable("user-id") Long userId) {
+	public ResponseEntity<UserDto> deactiveUser(@PathVariable("user-id") String userId) {
 		UserDto result = userService.deleteUser(userId);
 		return (result == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(result);
 	}
