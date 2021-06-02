@@ -89,6 +89,8 @@ Resources:
               Value: '{{resolve:secretsmanager:CFT-Secrets:SecretString:rds-password}}'
             - Name: SL_EMAIL
               Value: '{{resolve:secretsmanager:CFT-Secrets:SecretString:email}}'
+            - Name: SL_SECRET
+              Value: '{{resolve:secretsmanager:CFT-Secrets:SecretString:secret}}'
             - Name: APPLICATION_NAME
               Value: !Sub ${ApplicationName}
             - Name: APPLICATION_ENVIRONMENT
