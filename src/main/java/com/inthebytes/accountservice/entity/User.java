@@ -9,14 +9,20 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class User {
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
-	@Column(name = "user_id", nullable = false)
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(
+	    name = "UUID",
+	    strategy = "org.hibernate.id.UUIDGenerator"
+	)
+	@Column(name = "user_id")
 	private String userId;
 
 	@Basic

@@ -7,11 +7,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 public class Role {
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
-	@Column(name = "role_id", nullable = false)
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(
+	    name = "UUID",
+	    strategy = "org.hibernate.id.UUIDGenerator"
+	)
+	@Column(name = "role_id")
 	private String roleId;
 
 	@Basic

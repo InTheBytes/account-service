@@ -54,9 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 	    .addFilter(new AuthenticationFilter(authenticationManager()))
 	 	    .addFilter(new AuthorizationFilter(authenticationManager()))
 			.authorizeRequests()
+		    	.antMatchers(HttpMethod.POST, "/login").permitAll()
 			    .antMatchers("/admin/**").hasRole("ADMIN")
 		        .antMatchers( "/authenticated/**").authenticated()
-			    .antMatchers(HttpMethod.POST, "/login").permitAll()
 			    .antMatchers("/public/**").permitAll()
 	        
 	    // End Goal for Security
@@ -64,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	        
 	    //Bypass for development
 	        .antMatchers("/user").permitAll()
+
 
 	    // Logout
 	    .and()

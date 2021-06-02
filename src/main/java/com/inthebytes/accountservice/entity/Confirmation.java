@@ -8,13 +8,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import java.sql.Timestamp;
 
 @Entity
 public class Confirmation {
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(
+	    name = "UUID",
+	    strategy = "org.hibernate.id.UUIDGenerator"
+	)
 	@Column(name = "token_id", nullable = false)
 	private String tokenId;
 
