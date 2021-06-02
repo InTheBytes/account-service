@@ -138,6 +138,8 @@ Resources:
           Values:
             - /user*
             - /user/*
+            - /login
+            - /login/*
       Actions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
