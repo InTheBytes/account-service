@@ -25,7 +25,7 @@ public class AccountserviceApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-					.allowedOriginPatterns("*")
+					.allowedOriginPatterns("https://stacklunch.com", "https://*.stacklunch.com")
 					.exposedHeaders(JwtProperties.HEADER_STRING)
 					.allowCredentials(true)
 					.allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
