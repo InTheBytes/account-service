@@ -29,9 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000",
-		"http://stacklunch.com", "http://admin.stacklunch.com", 
-		"http://driver.stacklunch.com", "http://manager.stacklunch.com"})
 @Tag(name = "user", description = "the user API")
 public class UserAccountController {
 

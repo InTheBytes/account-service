@@ -22,9 +22,6 @@ import software.amazon.awssdk.services.ses.model.MessageRejectedException;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000",
-		"http://stacklunch.com", "http://admin.stacklunch.com", 
-		"http://driver.stacklunch.com", "http://manager.stacklunch.com"})
 public class RegistrationController {
 
 	@Autowired
