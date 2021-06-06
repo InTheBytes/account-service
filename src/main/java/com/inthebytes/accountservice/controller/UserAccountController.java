@@ -7,6 +7,12 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,11 +32,20 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000",
 		"http://stacklunch.com", "http://admin.stacklunch.com", 
 		"http://driver.stacklunch.com", "http://manager.stacklunch.com"})
+@Tag(name = "user", description = "the user API")
 public class UserAccountController {
 
 	@Autowired
 	private UserCrudService userService;
-	
+
+	@Operation(summary = "Get user by user ID", description = "", tags = { "user" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "sucessful operation", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)),
+					@Content(mediaType = "application/xml", schema = @Schema(implementation = UserDto.class))
+			}),
+			@ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+	})
 	@GetMapping(value="/{user-id}")
 	public ResponseEntity<UserDto> getUser(@PathVariable("user-id") String userId) {
 		UserDto result = userService.readUser(userId);
