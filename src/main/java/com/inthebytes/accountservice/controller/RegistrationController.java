@@ -1,15 +1,20 @@
 package com.inthebytes.accountservice.controller;
 
 import com.inthebytes.accountservice.service.ConfirmationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +27,7 @@ import software.amazon.awssdk.services.ses.model.MessageRejectedException;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name = "user", description = "The user API")
 public class RegistrationController {
 
 	@Autowired
@@ -30,7 +36,15 @@ public class RegistrationController {
 	@Autowired
 	private ConfirmationService confirmationService;
 
-	@RequestMapping(path = "/register", method = RequestMethod.POST)
+	@Operation(summary = "Register a new user", description = "", tags = { "user" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "201", description = "User created", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)),
+					@Content(mediaType = "application/xml", schema = @Schema(implementation = UserDto.class))
+			}),
+			@ApiResponse(responseCode = "409", description = "User already exists", content = @Content)
+	})
+	@PostMapping(path = "/register")
 	@ResponseBody
 	public ResponseEntity<UserDto> registerUser(@RequestBody User newUser) {
 
@@ -66,6 +80,17 @@ public class RegistrationController {
 		return response;
 	}
 
+	@Operation(summary = "Confirm new user with token", description = "", tags = { "user" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Account confirmed", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = String.class)),
+					@Content(mediaType = "application/xml", schema = @Schema(implementation = String.class))
+			}),
+			@ApiResponse(responseCode = "401", description = "Token expired or invalid", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = String.class)),
+					@Content(mediaType = "application/xml", schema = @Schema(implementation = String.class))
+			})
+	})
 	@PutMapping(path="/confirm-account", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	@ResponseBody
 	public ResponseEntity<String> putUserConfirmation(@RequestParam("token") String confirmationToken) {
