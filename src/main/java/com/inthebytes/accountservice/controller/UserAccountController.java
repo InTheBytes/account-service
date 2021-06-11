@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,18 +57,15 @@ public class UserAccountController {
 			})
 	})
 	@GetMapping(value="")
-	public ResponseEntity<List<UserDto>> getAllUsers(
-			@RequestParam("page-size") Integer pageSize,
-			@RequestParam("page") Integer page) {
-		List<List<UserDto>> users = userService.readUsers(pageSize);
-		if (users == null || users.size() <= 0)
+	public ResponseEntity<Page<UserDto>> getAllUsers(
+			@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+			@RequestParam(value = "page-size", required = false, defaultValue = "10") Integer pageSize )
+			 {
+		Page<UserDto> users = userService.readUsers(page, pageSize);
+		if (users == null || users.getContent().size() <= 0)
 			return ResponseEntity.noContent().build();
 		else {
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("page", Integer.toString(page));
-			headers.set("total-pages", Integer.toString(users.size()));
-			headers.set("Access-Control-Expose-Headers", "page, total-pages");
-			return ResponseEntity.ok().headers(headers).body(users.get(page-1));
+			return ResponseEntity.ok().body(users);
 		}
 	}
 
@@ -79,18 +77,14 @@ public class UserAccountController {
 			})
 	})
 	@GetMapping(value="/active")
-	public ResponseEntity<List<UserDto>> getActiveUsers(
-			@RequestParam("page-size") Integer pageSize,
-			@RequestParam("page") Integer page) {
-		List<List<UserDto>> users = userService.readActiveUsers(pageSize);
-		if (users == null || users.size() <= 0)
+	public ResponseEntity<Page<UserDto>> getActiveUsers(
+			@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+			@RequestParam(value = "page-size", required = false, defaultValue = "10") Integer pageSize) {
+		Page<UserDto> users = userService.readActiveUsers(page, pageSize);
+		if (users == null || users.getContent().size() <= 0)
 			return ResponseEntity.noContent().build();
 		else {
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("page", Integer.toString(page));
-			headers.set("total-pages", Integer.toString(users.size()));
-			headers.set("Access-Control-Expose-Headers", "page, total-pages");
-			return ResponseEntity.ok().headers(headers).body(users.get(page-1));
+			return ResponseEntity.ok().body(users);
 		}
 	}
 
