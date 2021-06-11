@@ -45,8 +45,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 					credentials.getPassword(),
 					new ArrayList<>());
 		
-		Authentication auth = authManager.authenticate(authToken);
-		return auth;
+		try {
+			return authManager.authenticate(authToken);
+		} catch (NullPointerException e) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return null;
+		}
 	}
 	
 	@Override
