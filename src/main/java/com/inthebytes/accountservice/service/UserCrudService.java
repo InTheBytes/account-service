@@ -36,8 +36,8 @@ public class UserCrudService {
 		return repo.findAll(PageRequest.of(page, pageSize)).map((x) -> mapper.convert(x));
 	}
 	
-	public Page<UserDto> readActiveUsers(Integer page, Integer pageSize) {
-		return repo.findByActive(true, PageRequest.of(page, pageSize)).map((x) -> mapper.convert(x));
+	public Page<UserDto> readUsersByActive(Boolean active, Integer page, Integer pageSize) {
+		return repo.findByActive(active, PageRequest.of(page, pageSize)).map((x) -> mapper.convert(x));
 	}
 	
 	public UserDto readUser(String userId) {

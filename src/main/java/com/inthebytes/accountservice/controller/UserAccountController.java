@@ -49,7 +49,10 @@ public class UserAccountController {
 		return (result == null) ? ResponseEntity.status(HttpStatus.NOT_FOUND).build() : ResponseEntity.ok().body(result);
 	}
 
-	@Operation(summary = "Get all users", description = "", tags = { "user" })
+	@Operation(summary = "Get page of users", 
+			description = "Returns a page of users with optional params for page number, page size, and active"
+					+ "if nothing is provided for active, it will return all users. The parameters takes 'true' or 'false'", 
+			tags = { "user" })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "successful operation", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class, type = "List")),
@@ -59,28 +62,17 @@ public class UserAccountController {
 	@GetMapping(value="")
 	public ResponseEntity<Page<UserDto>> getAllUsers(
 			@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-			@RequestParam(value = "page-size", required = false, defaultValue = "10") Integer pageSize )
+			@RequestParam(value = "page-size", required = false, defaultValue = "10") Integer pageSize,
+			@RequestParam(value = "active", required = false, defaultValue = "_") String active)
 			 {
-		Page<UserDto> users = userService.readUsers(page, pageSize);
-		if (users == null || users.getContent().size() <= 0)
-			return ResponseEntity.noContent().build();
-		else {
-			return ResponseEntity.ok().body(users);
+		
+		Page<UserDto> users;
+		if ("true".equals(active) || "false".equals(active)) {
+			users = userService.readUsersByActive(Boolean.parseBoolean(active), page, pageSize);
+		} else {
+			users = userService.readUsers(page, pageSize);
 		}
-	}
-
-	@Operation(summary = "Get all active users", description = "", tags = { "user" })
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "successful operation", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class, type = "List")),
-					@Content(mediaType = "application/xml", schema = @Schema(implementation = UserDto.class, type = "List"))
-			})
-	})
-	@GetMapping(value="/active")
-	public ResponseEntity<Page<UserDto>> getActiveUsers(
-			@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-			@RequestParam(value = "page-size", required = false, defaultValue = "10") Integer pageSize) {
-		Page<UserDto> users = userService.readActiveUsers(page, pageSize);
+		
 		if (users == null || users.getContent().size() <= 0)
 			return ResponseEntity.noContent().build();
 		else {
