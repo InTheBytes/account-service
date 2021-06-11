@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,10 @@ public class UserAccountController {
 		return (result == null) ? ResponseEntity.status(HttpStatus.NOT_FOUND).build() : ResponseEntity.ok().body(result);
 	}
 
-	@Operation(summary = "Get all users", description = "", tags = { "user" })
+	@Operation(summary = "Get page of users", 
+			description = "Returns a page of users with optional params for page number, page size, and active"
+					+ "if nothing is provided for active, it will return all users. The parameters takes 'true' or 'false'", 
+			tags = { "user" })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "successful operation", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class, type = "List")),
@@ -56,41 +60,23 @@ public class UserAccountController {
 			})
 	})
 	@GetMapping(value="")
-	public ResponseEntity<List<UserDto>> getAllUsers(
-			@RequestParam("page-size") Integer pageSize,
-			@RequestParam("page") Integer page) {
-		List<List<UserDto>> users = userService.readUsers(pageSize);
-		if (users == null || users.size() <= 0)
-			return ResponseEntity.noContent().build();
-		else {
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("page", Integer.toString(page));
-			headers.set("total-pages", Integer.toString(users.size()));
-			headers.set("Access-Control-Expose-Headers", "page, total-pages");
-			return ResponseEntity.ok().headers(headers).body(users.get(page-1));
+	public ResponseEntity<Page<UserDto>> getAllUsers(
+			@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+			@RequestParam(value = "page-size", required = false, defaultValue = "10") Integer pageSize,
+			@RequestParam(value = "active", required = false, defaultValue = "_") String active)
+			 {
+		
+		Page<UserDto> users;
+		if ("true".equals(active) || "false".equals(active)) {
+			users = userService.readUsersByActive(Boolean.parseBoolean(active), page, pageSize);
+		} else {
+			users = userService.readUsers(page, pageSize);
 		}
-	}
-
-	@Operation(summary = "Get all active users", description = "", tags = { "user" })
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "successful operation", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class, type = "List")),
-					@Content(mediaType = "application/xml", schema = @Schema(implementation = UserDto.class, type = "List"))
-			})
-	})
-	@GetMapping(value="/active")
-	public ResponseEntity<List<UserDto>> getActiveUsers(
-			@RequestParam("page-size") Integer pageSize,
-			@RequestParam("page") Integer page) {
-		List<List<UserDto>> users = userService.readActiveUsers(pageSize);
-		if (users == null || users.size() <= 0)
+		
+		if (users == null || users.getContent().size() <= 0)
 			return ResponseEntity.noContent().build();
 		else {
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("page", Integer.toString(page));
-			headers.set("total-pages", Integer.toString(users.size()));
-			headers.set("Access-Control-Expose-Headers", "page, total-pages");
-			return ResponseEntity.ok().headers(headers).body(users.get(page-1));
+			return ResponseEntity.ok().body(users);
 		}
 	}
 

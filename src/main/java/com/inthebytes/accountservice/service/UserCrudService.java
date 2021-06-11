@@ -7,6 +7,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.inthebytes.accountservice.dao.UserDao;
@@ -22,7 +24,7 @@ public class UserCrudService {
 	@Autowired
 	private UserDao repo;
 	
-	public List<UserDto> readUsers() {
+	private List<UserDto> readUsers() {
 		List<UserDto> users = repo.findAll()
 				.stream()
 				.map((x) -> mapper.convert(x))
@@ -30,21 +32,12 @@ public class UserCrudService {
 		return (users.size() > 0) ? users : null;
 	}
 	
-	public List<List<UserDto>> readUsers(Integer pageSize) {
-		List<UserDto> manuscript = readUsers();
-		Map<Integer, List<UserDto>> pages = manuscript.stream().collect(Collectors.groupingBy(x -> manuscript.indexOf(x)/pageSize));
-		List<List<UserDto>> paginated = new ArrayList<List<UserDto>>(pages.values());
-		return paginated;
+	public Page<UserDto> readUsers(Integer page, Integer pageSize) {
+		return repo.findAll(PageRequest.of(page, pageSize)).map((x) -> mapper.convert(x));
 	}
 	
-	public List<List<UserDto>> readActiveUsers(Integer pageSize) {
-		List<UserDto> manuscript = readUsers().stream()
-				.filter((x) -> x.getIsActive())
-				.collect(Collectors.toList());
-		Map<Integer, List<UserDto>> pages = manuscript.stream()
-				.collect(Collectors.groupingBy(x -> manuscript.indexOf(x)/pageSize));
-		List<List<UserDto>> paginated = new ArrayList<List<UserDto>>(pages.values());
-		return paginated;
+	public Page<UserDto> readUsersByActive(Boolean active, Integer page, Integer pageSize) {
+		return repo.findByActive(active, PageRequest.of(page, pageSize)).map((x) -> mapper.convert(x));
 	}
 	
 	public UserDto readUser(String userId) {
