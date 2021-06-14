@@ -27,8 +27,6 @@ Resources:
             - ecs-tasks.amazonaws.com
           Action:
           - sts:AssumeRole
-          - iam:CreateTags
-          - iam:DeleteTags
       Tags:
           - Key: ApplicationName
             Value: !Ref ApplicationName
