@@ -138,11 +138,7 @@ Resources:
       Conditions:
         - Field: path-pattern
           Values:
-            - /user*
             - /user/*
-            - /login
-            - /login/*
-            - /v3/api-docs/accountservice
       Actions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
