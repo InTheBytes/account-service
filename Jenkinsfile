@@ -48,7 +48,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying cloudformation..'
-                sh "aws cloudformation deploy --stack-name StackLunchAccountService --template-file ./ecs.yaml --parameter-overrides ApplicationName=AccountService ApplicationEnvironment=dev ECRRepositoryUri=241465518750.dkr.ecr.us-east-2.amazonaws.com/accountservice:latest --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --region us-east-2"
+                withKubeConfig([credentialsId: 'eks-config', serverUrl: 'https://C26AA669C29F29D1DD2464FFE44053D3.sk1.us-east-2.eks.amazonaws.com']) {
+                    sh 'kubectl set image https://241465518750.dkr.ecr.us-east-2.amazonaws.com/accountservice:latest'
+                }
             }
         }
     }
