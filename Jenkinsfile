@@ -48,10 +48,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Updating k8s image..'
-                withKubeConfig([credentialsId: 'eks-config', serverUrl: 'https://C26AA669C29F29D1DD2464FFE44053D3.sk1.us-east-2.eks.amazonaws.com',
-                ]) {
-                    sh './kubectl set image deployment/account-service account-service=241465518750.dkr.ecr.us-east-2.amazonaws.com/accountservice:latest'
-                }
+                sh './kubectl set image deployment/account-service account-service=241465518750.dkr.ecr.us-east-2.amazonaws.com/accountservice:latest'
             }
         }
     }
