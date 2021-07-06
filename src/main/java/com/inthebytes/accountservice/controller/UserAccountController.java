@@ -3,8 +3,8 @@ package com.inthebytes.accountservice.controller;
 import com.inthebytes.accountservice.dto.UserDto;
 import com.inthebytes.accountservice.service.UserCrudService;
 
-import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,13 +15,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +35,7 @@ public class UserAccountController {
 
 	@Autowired
 	private UserCrudService userService;
+	
 
 	@Operation(summary = "Get user by user ID", description = "", tags = { "user" })
 	@ApiResponses(value = {
@@ -47,6 +49,20 @@ public class UserAccountController {
 	public ResponseEntity<UserDto> getUser(@PathVariable("user-id") String userId) {
 		UserDto result = userService.readUser(userId);
 		return (result == null) ? ResponseEntity.status(HttpStatus.NOT_FOUND).build() : ResponseEntity.ok().body(result);
+	}
+
+	@Operation(summary = "Get user profile by including token", description = "", tags = { "profile" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "successful operation", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)),
+					@Content(mediaType = "application/xml", schema = @Schema(implementation = UserDto.class))
+			}),
+			@ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+	})
+	@GetMapping(value="/profile")
+	public ResponseEntity<UserDto> getProfile(@RequestAttribute("username") String username) {
+		UserDto result = userService.findByUsername(username);
+		return (result == null) ? ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok().body(result);
 	}
 
 	@Operation(summary = "Get page of users", 

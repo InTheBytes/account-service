@@ -1,11 +1,7 @@
 package com.inthebytes.accountservice.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,12 +20,8 @@ public class UserCrudService {
 	@Autowired
 	private UserDao repo;
 	
-	private List<UserDto> readUsers() {
-		List<UserDto> users = repo.findAll()
-				.stream()
-				.map((x) -> mapper.convert(x))
-				.collect(Collectors.toList());
-		return (users.size() > 0) ? users : null;
+	public UserDto findByUsername(String username) {
+		return mapper.convert(repo.findByUsername(username));
 	}
 	
 	public Page<UserDto> readUsers(Integer page, Integer pageSize) {
