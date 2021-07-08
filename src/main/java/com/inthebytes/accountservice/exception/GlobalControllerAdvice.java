@@ -1,19 +1,23 @@
 package com.inthebytes.accountservice.exception;
 
 import org.hibernate.ObjectNotFoundException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 
 @RestControllerAdvice
-public class GlobalControllerAdvice {
+public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(ObjectNotFoundException.class)
+	@ExceptionHandler(value = {ObjectNotFoundException.class, UserDoesNotExistException.class})
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public ResponseEntity<String> handleObjectNotFound(ObjectNotFoundException ex) {
+	public ResponseEntity<String> handleObjectNotFound(Exception ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
@@ -28,5 +32,15 @@ public class GlobalControllerAdvice {
 	public ResponseEntity<String> handleOtherException(Exception ex) {
 		return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	@ExceptionHandler(value = NotAuthorizedException.class)
+	protected ResponseEntity<Object> handleNotAuthorized(
+			NotAuthorizedException exc, WebRequest request) {
+		
+		String body = "Your account does not have permissions for this operation";
+        return handleExceptionInternal(exc,	body, 
+          new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+	}
+	
 
 }
