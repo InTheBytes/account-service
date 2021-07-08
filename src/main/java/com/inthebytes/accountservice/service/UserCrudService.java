@@ -4,12 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inthebytes.accountservice.dao.UserDao;
+import com.inthebytes.accountservice.dto.PasswordChangeDto;
 import com.inthebytes.accountservice.dto.UserDto;
 import com.inthebytes.accountservice.entity.User;
+import com.inthebytes.accountservice.exception.NotAuthorizedException;
+import com.inthebytes.accountservice.exception.UserDoesNotExistException;
 
 @Service
+@Transactional
 public class UserCrudService {
 	
 	@Autowired
@@ -38,23 +43,46 @@ public class UserCrudService {
 	public UserDto updateUser(UserDto user, String userId) {
 		User userEntity = repo.findByUserId(userId);
 		if (userEntity == null)
-			return null;
+			throw new UserDoesNotExistException("User ID "+userId+" not found");
 		else {
 			user.setUserId(userId);
 			String password = userEntity.getPassword();
 			userEntity = mapper.convert(user);
 			userEntity.setPassword(password);
-			return mapper.convert(repo.save(userEntity));
+			userEntity = repo.save(userEntity);
+			UserDto result = mapper.convert(userEntity);
+			if (result.equals(user)) {
+				return result;
+			} else {
+				throw new RuntimeException("Failed to save the new user details");
+			}
 		}
 	}
 	
 	public UserDto deleteUser(String userId) {
 		User user = repo.findByUserId(userId);
 		if (user == null)
-			return null;
+			throw new UserDoesNotExistException("User ID "+userId+" not found");
 		else {
 			user.setActive(false);
 			return mapper.convert(repo.save(user));
 		}
+	}
+	
+	public Boolean changePassword(String username, PasswordChangeDto passChange) {
+		User user = repo.findByUsername(username);
+		if (user == null) {
+			throw new UserDoesNotExistException("Could not find the user profile");
+		} else if (!checkPasswordMatch(user, passChange.getCurrentPassword())) {
+			throw new NotAuthorizedException("Provided password did not match the current password");
+		} else {
+			user.setPassword(passChange.getNewPassword());
+			user = repo.save(user);
+			return checkPasswordMatch(user, passChange.getNewPassword());
+		}
+	}
+	
+	private Boolean checkPasswordMatch(User user, String password) {
+		return (password.equals(user.getPassword()));
 	}
 }
