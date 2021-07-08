@@ -26,8 +26,6 @@ public class ProfileController {
 	
 	@Autowired
 	private UserCrudService userService;
-	
-	@Autowired
 
 	@Operation(summary = "Get user profile by including token", description = "", tags = { "profile" })
 	@ApiResponses(value = {
@@ -51,7 +49,7 @@ public class ProfileController {
 	})
 	@PutMapping("/password")
 	public ResponseEntity<?> editPassword(
-			@RequestAttribute String username, 
+			@RequestAttribute("username") String username, 
 			@RequestBody PasswordChangeDto passChange) {
 		if (userService.changePassword(username, passChange)) {
 			return ResponseEntity.status(HttpStatus.OK).build();

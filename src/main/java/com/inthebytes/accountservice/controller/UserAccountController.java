@@ -49,20 +49,6 @@ public class UserAccountController {
 		return (result == null) ? ResponseEntity.status(HttpStatus.NOT_FOUND).build() : ResponseEntity.ok().body(result);
 	}
 
-	@Operation(summary = "Get user profile by including token", description = "", tags = { "profile" })
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "successful operation", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)),
-					@Content(mediaType = "application/xml", schema = @Schema(implementation = UserDto.class))
-			}),
-			@ApiResponse(responseCode = "404", description = "User not found", content = @Content)
-	})
-	@GetMapping(value="/profile")
-	public ResponseEntity<UserDto> getProfile(@RequestAttribute("username") String username) {
-		UserDto result = userService.findByUsername(username);
-		return (result == null) ? ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok().body(result);
-	}
-
 	@Operation(summary = "Get page of users", 
 			description = "Returns a page of users with optional params for page number, page size, and active"
 					+ "if nothing is provided for active, it will return all users. The parameters takes 'true' or 'false'", 
