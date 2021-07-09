@@ -7,6 +7,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import software.amazon.awssdk.services.ses.model.SesException;
 
 @RestControllerAdvice
 public class GlobalControllerAdvice {
@@ -21,6 +22,12 @@ public class GlobalControllerAdvice {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<String> handleBadParams(MissingServletRequestParameterException ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(SesException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<String> handleEmailError(SesException ex) {
+		return new ResponseEntity<>("Could not send email", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler({Exception.class})
