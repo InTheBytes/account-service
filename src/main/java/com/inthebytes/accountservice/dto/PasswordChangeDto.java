@@ -2,32 +2,43 @@ package com.inthebytes.accountservice.dto;
 
 public class PasswordChangeDto {
 	
-	private String currentPassword;
+	private String username;
 	
-	private String newPassword;
+	private String email;
+	
+	private String token;
 
-	public String getCurrentPassword() {
-		return currentPassword;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setCurrentPassword(String currentPassword) {
-		this.currentPassword = currentPassword;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public String getNewPassword() {
-		return newPassword;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setNewPassword(String newPassword) {
-		this.newPassword = newPassword;
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((currentPassword == null) ? 0 : currentPassword.hashCode());
-		result = prime * result + ((newPassword == null) ? 0 : newPassword.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((token == null) ? 0 : token.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
 
@@ -40,22 +51,26 @@ public class PasswordChangeDto {
 		if (getClass() != obj.getClass())
 			return false;
 		PasswordChangeDto other = (PasswordChangeDto) obj;
-		if (currentPassword == null) {
-			if (other.currentPassword != null)
+		if (email == null) {
+			if (other.email != null)
 				return false;
-		} else if (!currentPassword.equals(other.currentPassword))
+		} else if (!email.equals(other.email))
 			return false;
-		if (newPassword == null) {
-			if (other.newPassword != null)
+		if (token == null) {
+			if (other.token != null)
 				return false;
-		} else if (!newPassword.equals(other.newPassword))
+		} else if (!token.equals(other.token))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "PasswordChangeDto [currentPassword=" + currentPassword + ", newPassword=" + newPassword + "]";
+		return "PasswordChangeDto [username=" + username + ", email=" + email + ", token=" + token + "]";
 	}
-
 }

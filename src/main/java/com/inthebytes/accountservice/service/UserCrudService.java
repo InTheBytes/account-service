@@ -3,6 +3,7 @@ package com.inthebytes.accountservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,22 +68,5 @@ public class UserCrudService {
 			user.setActive(false);
 			return mapper.convert(repo.save(user));
 		}
-	}
-	
-	public Boolean changePassword(String username, PasswordChangeDto passChange) {
-		User user = repo.findByUsername(username);
-		if (user == null) {
-			throw new UserDoesNotExistException("Could not find the user profile");
-		} else if (!checkPasswordMatch(user, passChange.getCurrentPassword())) {
-			throw new NotAuthorizedException("Provided password did not match the current password");
-		} else {
-			user.setPassword(passChange.getNewPassword());
-			user = repo.save(user);
-			return checkPasswordMatch(user, passChange.getNewPassword());
-		}
-	}
-	
-	private Boolean checkPasswordMatch(User user, String password) {
-		return (password.equals(user.getPassword()));
 	}
 }

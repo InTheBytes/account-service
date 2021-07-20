@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inthebytes.accountservice.dto.PasswordChangeDto;
@@ -41,19 +42,39 @@ public class ProfileController {
 		return (result == null) ? ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok().body(result);
 	}
 	
-	@Operation(summary = "Change profile password using auth token for identity", description = "", tags = { "profile", "passsword" })
+	@Operation(summary = "Change profile password using password confirmation token", description = "", tags = { "profile", "passsword" })
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "successful operation", content = @Content),
-			@ApiResponse(responseCode = "404", description = "User not found", content = @Content),
-			@ApiResponse(responseCode = "401", description = "Invalid authorization", content = @Content)
+			@ApiResponse(responseCode = "200", description = "successful password change operation", content = @Content),
+			@ApiResponse(responseCode = "404", description = "Token not found", content = @Content),
+			@ApiResponse(responseCode = "400", description = "Token parameter not included", content= @Content)
 	})
 	@PutMapping("/password")
 	public ResponseEntity<?> editPassword(
-			@RequestAttribute("username") String username, 
-			@RequestBody PasswordChangeDto passChange) {
-		if (userService.changePassword(username, passChange)) {
-			return ResponseEntity.status(HttpStatus.OK).build();
+			@RequestParam(name="token", required=true) String token,
+			@RequestBody String newPassword) {
+		//TODO: GENERATE TOKEN
+		return null;
+	}
+	
+	@Operation(summary = "Create a token to send via email for password changes", description="", tags = {"token", "profile", "password"})
+	@ApiResponses(value = {
+			@ApiResponse(responseCode="201", description="Token Successfully created", content = @Content),
+			@ApiResponse(responseCode="404", description="username or email not found", content=@Content),
+			@ApiResponse(responseCode="400", description="Neither username nor email parameters were included", content=@Content)
+	})
+	@GetMapping("/password/token")
+	public ResponseEntity<?> generatePassChangeToken(
+			@RequestParam(name="username", required=false, defaultValue="") String username,
+			@RequestParam(name="email", required=false, defaultValue="") String email
+			) {
+		if (username.length() == 0 && email.length() == 0) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		} else if (username.length() == 0) {
+			//TODO: GENERATE TOKEN USING EMAIL
+			return null;
+		} else {
+			//TODO: GENERATE TOKEN USING USERNAME
+			return null;
 		}
-		return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
 	}
 }
