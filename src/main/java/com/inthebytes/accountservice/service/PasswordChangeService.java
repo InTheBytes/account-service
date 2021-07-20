@@ -1,14 +1,13 @@
 package com.inthebytes.accountservice.service;
 
-import java.io.IOException;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,8 +37,8 @@ public class PasswordChangeService {
 	@Value("${SL_EMAIL}")
 	private String mailUserName;
 	
-	@Value("${server.port}")
-	private Integer serverPort;
+	@Autowired
+	private ServerProperties server;
 	
 	public Boolean changePassword(String token, String newPassword) {
 		PasswordChange savedToken = passRepo.findByConfirmationToken(token);
@@ -90,7 +89,7 @@ public class PasswordChangeService {
 	}
 	
 	private void sendChangeToken(String token, String email){
-		String address = (serverPort == 8082) ? "localhost:3000/" : "https://stacklunch.com/";
+		String address = (server.getPort() == 8082) ? "localhost:3000/" : "https://stacklunch.com/";
 		
 		// The email body for non-HTML email clients
 		String bodyText = "To reset your password, please follow the link: \r\n"

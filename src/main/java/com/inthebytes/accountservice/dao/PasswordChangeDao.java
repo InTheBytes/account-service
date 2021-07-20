@@ -14,5 +14,5 @@ public interface PasswordChangeDao extends JpaRepository<PasswordChange, String>
 	PasswordChange findByUser(User user);
 	PasswordChange findByConfirmationToken(String confirmationToken);
 	
-	List<PasswordChange> findAllByCreatedDateBefore(Timestamp latestDate);
+	List<PasswordChange> findAllByCreatedTimeBefore(Timestamp latestDate);
 }

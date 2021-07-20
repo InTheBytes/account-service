@@ -3,15 +3,12 @@ package com.inthebytes.accountservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inthebytes.accountservice.dao.UserDao;
-import com.inthebytes.accountservice.dto.PasswordChangeDto;
 import com.inthebytes.accountservice.dto.UserDto;
 import com.inthebytes.accountservice.entity.User;
-import com.inthebytes.accountservice.exception.NotAuthorizedException;
 import com.inthebytes.accountservice.exception.UserDoesNotExistException;
 
 @Service
