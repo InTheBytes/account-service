@@ -11,10 +11,6 @@ public class EmailSendService {
 
 	private SesClient client;
 
-	public EmailSendService() {
-		client = SesClient.builder().build();
-	}
-
 	public void send(String sender,
 	                 String recipient,
 	                 String subject,
@@ -23,6 +19,7 @@ public class EmailSendService {
 	                 String link,
 	                 String button
 	) {
+		client = SesClient.builder().build();
 		JSONObject templateData = new JSONObject();
 		templateData.put("title", subject)
 				.put("HTMLmessage", bodyHTML)

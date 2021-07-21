@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +15,6 @@ import com.inthebytes.accountservice.dao.PasswordChangeDao;
 import com.inthebytes.accountservice.dao.UserDao;
 import com.inthebytes.accountservice.entity.PasswordChange;
 import com.inthebytes.accountservice.entity.User;
-import com.inthebytes.accountservice.exception.MessagingFailedException;
 import com.inthebytes.accountservice.exception.TokenDoesNotExistException;
 import com.inthebytes.accountservice.exception.UserDoesNotExistException;
 
@@ -36,9 +34,12 @@ public class PasswordChangeService {
 	
 	@Value("${SL_EMAIL}")
 	private String mailUserName;
-	
-	@Autowired
-	private ServerProperties server;
+
+	@Value("${SL_DOMAIN_PROTOCOL}")
+	private String domainProtocol;
+
+	@Value("${SL_DOMAIN_HOST}")
+	private String domainName;
 	
 	public void sendChangeTokenByEmail(String email) {
 		User user = userRepo.findByEmailIgnoreCase(email);
@@ -57,11 +58,17 @@ public class PasswordChangeService {
 	}
 	
 	private PasswordChange generateToken(User user) {
+		PasswordChange prevToken = passRepo.findByUser(user);
+		if (prevToken != null) {
+			passRepo.delete(prevToken);
+			passRepo.flush();
+		}
 		PasswordChange token = new PasswordChange();
 		token.setConfirmationToken(UUID.randomUUID().toString());
 		token.setUser(user);
 		token.setCreatedTime(Timestamp.from(Instant.now()));
 		token = passRepo.save(token);
+		
 		if (token == null) {
 			throw new RuntimeException("Failed to create token");
 		} else {
@@ -90,20 +97,18 @@ public class PasswordChangeService {
 	}
 	
 	private void sendChangeToken(String token, String email){
-		String address = (server.getPort() == 8082) ? "localhost:3000/" : "https://stacklunch.com/";
+		String link = domainProtocol +"://"+ domainName +"/user/confirm-account?token="+ token;
 		
 		// The email body for non-HTML email clients
-		String bodyText = "To reset your password, please follow the link: \r\n"
-				+address+"reset-password/"+token;
+		String bodyText = "A password reset has been requested for your StackLunch account."
+				+ "\\nIf this was done by you, please click the following link "
+				+ "to reset your password. If not, you can ignore this email.";
 
 		// The HTML body of the email
-		String bodyHTML = "<html>" + "<head></head>" + "<body>" + "<h1>To reset your password, please follow the link</h1>"
-				+ "<a href=\""+address+"reset-password/"+ token+"\">Reset Password</a>" + "</body>" + "</html>";
+		String bodyHTML = "A password reset has been requested for your StackLunch account."
+				+ "<br>If this was done by you, please click the following link "
+				+ "to reset your password. If not, you can ignore this email.";
 		
-		try {
-			emailService.send(mailUserName, email, "Reset Password", bodyText, bodyHTML);
-		} catch (Exception e) {
-			throw new MessagingFailedException("Failed to send password reset link");
-		}
+		emailService.send(mailUserName, email, "Password Reset", bodyText, bodyHTML, link, "Change Password");
 	}
 }
