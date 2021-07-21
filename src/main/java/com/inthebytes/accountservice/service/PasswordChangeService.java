@@ -40,25 +40,6 @@ public class PasswordChangeService {
 	@Autowired
 	private ServerProperties server;
 	
-	public Boolean changePassword(String token, String newPassword) {
-		PasswordChange savedToken = passRepo.findByConfirmationToken(token);
-		if (token == null) {
-			throw new TokenDoesNotExistException("The token "+token+" could not be found");
-		} else if (savedToken.getCreatedTime().before(Date.from(Instant.now().minusSeconds((long) (60 * 30))))) {
-			passRepo.delete(savedToken);
-			return false;
-		}
-		User user = savedToken.getUser();
-		String password = new BCryptPasswordEncoder().encode(newPassword);
-		user.setPassword(password);
-		user = userRepo.save(user);
-		if (user == null) {
-			throw new UserDoesNotExistException("Token not associated with a valid user");
-		} else if (!user.getPassword().equals(password)) {
-			throw new RuntimeException("Failed to change password");
-		} else return true;
-	}
-	
 	public void sendChangeTokenByEmail(String email) {
 		User user = userRepo.findByEmailIgnoreCase(email);
 		if (user == null) {
@@ -88,22 +69,40 @@ public class PasswordChangeService {
 		}
 	}
 	
+	public Boolean changePassword(String token, String newPassword) {
+		PasswordChange savedToken = passRepo.findByConfirmationToken(token);
+		if (token == null) {
+			throw new TokenDoesNotExistException("The token "+token+" could not be found");
+		} else if (savedToken.getCreatedTime().before(Date.from(Instant.now().minusSeconds((long) (60 * 30))))) {
+			passRepo.delete(savedToken);
+			return false;
+		}
+		User user = savedToken.getUser();
+		String password = new BCryptPasswordEncoder().encode(newPassword);
+		user.setPassword(password);
+		user = userRepo.save(user);
+		if (user == null) {
+			throw new UserDoesNotExistException("Token not associated with a valid user");
+		} else if (!user.getPassword().equals(password)) {
+			throw new RuntimeException("Failed to change password");
+		} else return true;
+	}
+	
 	private void sendChangeToken(String token, String email){
 		String address = (server.getPort() == 8082) ? "localhost:3000/" : "https://stacklunch.com/";
 		
 		// The email body for non-HTML email clients
 		String bodyText = "To reset your password, please follow the link: \r\n"
-				+address+"user/confirm-account?token=";
+				+address+"reset-password/"+token;
 
 		// The HTML body of the email
 		String bodyHTML = "<html>" + "<head></head>" + "<body>" + "<h1>To reset your password, please follow the link</h1>"
-				+ "<a href=\""+address+"user/confirm-account?token="+ token+"\">Confirmation Link</a>" + "</body>" + "</html>";
+				+ "<a href=\""+address+"reset-password/"+ token+"\">Reset Password</a>" + "</body>" + "</html>";
 		
 		try {
 			emailService.send(mailUserName, email, "Reset Password", bodyText, bodyHTML);
 		} catch (Exception e) {
-			throw new MessagingFailedException("Failed to send password reset link");
+			throw new MessagingFailedException("Failed to send password reset link\n"+e.getMessage());
 		}
 	}
-
 }

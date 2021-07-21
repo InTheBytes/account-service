@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inthebytes.accountservice.dto.UserDto;
+import com.inthebytes.accountservice.service.PasswordChangeService;
 import com.inthebytes.accountservice.service.UserCrudService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,9 @@ public class ProfileController {
 	
 	@Autowired
 	private UserCrudService userService;
+	
+	@Autowired
+	private PasswordChangeService passwordService;
 
 	@Operation(summary = "Get user profile by including token", description = "", tags = { "profile" })
 	@ApiResponses(value = {
@@ -45,14 +49,18 @@ public class ProfileController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "successful password change operation", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Token not found", content = @Content),
-			@ApiResponse(responseCode = "400", description = "Token parameter not included", content= @Content)
+			@ApiResponse(responseCode = "400", description = "Token expired or not included", content= @Content)
 	})
 	@PutMapping("/password")
 	public ResponseEntity<?> editPassword(
 			@RequestParam(name="token", required=true) String token,
 			@RequestBody String newPassword) {
 		//TODO: GENERATE TOKEN
-		return null;
+		if (passwordService.changePassword(token, newPassword)) {
+			return ResponseEntity.ok().build();
+		} else {
+			return new ResponseEntity<>("Token expired", HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@Operation(summary = "Create a token to send via email for password changes", description="", tags = {"token", "profile", "password"})
@@ -69,11 +77,10 @@ public class ProfileController {
 		if (username.length() == 0 && email.length() == 0) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		} else if (username.length() == 0) {
-			//TODO: GENERATE TOKEN USING EMAIL
-			return null;
+			passwordService.sendChangeTokenByEmail(email);
 		} else {
-			//TODO: GENERATE TOKEN USING USERNAME
-			return null;
+			passwordService.sendChangeTokenByUsername(username);
 		}
+		return ResponseEntity.ok().build();
 	}
 }
