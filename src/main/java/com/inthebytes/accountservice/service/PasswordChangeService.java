@@ -81,6 +81,7 @@ public class PasswordChangeService {
 		String password = new BCryptPasswordEncoder().encode(newPassword);
 		user.setPassword(password);
 		user = userRepo.save(user);
+		passRepo.delete(savedToken);
 		if (user == null) {
 			throw new UserDoesNotExistException("Token not associated with a valid user");
 		} else if (!user.getPassword().equals(password)) {
@@ -102,7 +103,7 @@ public class PasswordChangeService {
 		try {
 			emailService.send(mailUserName, email, "Reset Password", bodyText, bodyHTML);
 		} catch (Exception e) {
-			throw new MessagingFailedException("Failed to send password reset link\n"+e.getMessage());
+			throw new MessagingFailedException("Failed to send password reset link");
 		}
 	}
 }
