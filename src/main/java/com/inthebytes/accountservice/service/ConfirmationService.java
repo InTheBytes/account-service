@@ -22,6 +22,12 @@ public class ConfirmationService {
 	@Value("${SL_EMAIL}")
 	private String mailUserName;
 
+	@Value("${SL_DOMAIN_PROTOCOL}")
+	private String domainProtocol;
+
+	@Value("${SL_DOMAIN_HOST}")
+	private String domainName;
+
 	@Autowired
 	private UserDao userDao;
 
@@ -77,14 +83,14 @@ public class ConfirmationService {
 		confirmationDao.save(confirmation);
 
 		// The email body for non-HTML email clients
-		String bodyText = "To confirm your account, please follow the link: \r\n"
-				+"http://localhost:8080/user/confirm-account?token="+ confirmation.getConfirmationToken();
+		String bodyText = "You have recently registered a new account with StackLunch.\\nTo finish registering your account, please click the following link to confirm your email address.";
 
 		// The HTML body of the email
-		String bodyHTML = "<html>" + "<head></head>" + "<body>" + "<h1>To confirm your account, please follow the link</h1>"
-				+ "<a href=\"http://localhost:8080/user/confirm-account?token="+ confirmation.getConfirmationToken() +"\">Confirmation Link</a>" + "</body>" + "</html>";
+		String bodyHTML = "You have recently registered a new account with StackLunch.<br>To finish registering your account, please click the following link to confirm your email address.";
 
-		emailSendService.send(mailUserName, existingUser.getEmail(), "Complete Registration", bodyText, bodyHTML);
+		String link = domainProtocol +"://"+ domainName +"/user/confirm-account?token="+ confirmation.getConfirmationToken();
+
+		emailSendService.send(mailUserName, existingUser.getEmail(), "Complete Registration", bodyText, bodyHTML, link, "Confirm Email");
 
 		return "Account created. Please check your email to verify your account.";
 	}

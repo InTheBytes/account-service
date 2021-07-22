@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.Verification;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
@@ -65,6 +64,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 				GrantedAuthority authority = new SimpleGrantedAuthority(role);
 				authorities.add(authority);
 				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userName, null, authorities);
+				request.setAttribute("username", userName);
 				return auth;
 			}
 			return null;

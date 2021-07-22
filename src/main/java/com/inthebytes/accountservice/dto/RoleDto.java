@@ -2,8 +2,6 @@ package com.inthebytes.accountservice.dto;
 
 import javax.persistence.Id;
 
-import org.springframework.lang.NonNull;
-
 public class RoleDto {
 
 	@Id

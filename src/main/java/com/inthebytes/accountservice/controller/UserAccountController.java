@@ -3,7 +3,6 @@ package com.inthebytes.accountservice.controller;
 import com.inthebytes.accountservice.dto.UserDto;
 import com.inthebytes.accountservice.service.UserCrudService;
 
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +32,7 @@ public class UserAccountController {
 
 	@Autowired
 	private UserCrudService userService;
+	
 
 	@Operation(summary = "Get user by user ID", description = "", tags = { "user" })
 	@ApiResponses(value = {

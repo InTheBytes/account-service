@@ -7,10 +7,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.inthebytes.accountservice.dao.ConfirmationDao;
 import com.inthebytes.accountservice.dao.UserDao;
 import com.inthebytes.accountservice.entity.Confirmation;
@@ -22,7 +18,6 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 import static org.junit.Assert.*;
