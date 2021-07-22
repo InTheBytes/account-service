@@ -78,7 +78,7 @@ public class PasswordChangeService {
 	
 	public Boolean changePassword(String token, String newPassword) {
 		PasswordChange savedToken = passRepo.findByConfirmationToken(token);
-		if (token == null) {
+		if (savedToken == null) {
 			throw new TokenDoesNotExistException("The token "+token+" could not be found");
 		} else if (savedToken.getCreatedTime().before(Date.from(Instant.now().minusSeconds((long) (60 * 30))))) {
 			passRepo.delete(savedToken);
@@ -97,7 +97,7 @@ public class PasswordChangeService {
 	}
 	
 	private void sendChangeToken(String token, String email){
-		String link = domainProtocol +"://"+ domainName +"/user/confirm-account?token="+ token;
+		String link = domainProtocol +"://"+ domainName +"/reset-password/"+ token;
 		
 		// The email body for non-HTML email clients
 		String bodyText = "A password reset has been requested for your StackLunch account."
