@@ -49,6 +49,7 @@ pipeline {
             steps {
                 echo 'Deploying cloudformation..'
                 sh "aws cloudformation deploy --stack-name StackLunchAccountService --template-file ./ecs.yaml --parameter-overrides ApplicationName=AccountService ApplicationEnvironment=dev ECRRepositoryUri=241465518750.dkr.ecr.us-east-2.amazonaws.com/accountservice:latest --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --region us-east-2"
+        	}
         }
     }
     post {
