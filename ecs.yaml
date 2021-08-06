@@ -96,9 +96,9 @@ Resources:
             - Name: APPLICATION_ENVIRONMENT
               Value: !Ref ApplicationEnvironment
             - Name: SL_DOMAIN_HOST
-                Value: '{{resolve:secretsmanager:CFT-Secrets:SecretString:domain-url}}'
+              Value: '{{resolve:secretsmanager:CFT-Secrets:SecretString:domain-url}}'
             - Name: SL_DOMAIN_PROTOCOL
-                Value: '{{resolve:secretsmanager:CFT-Secrets:SecretString:domain-protocol}}'
+              Value: '{{resolve:secretsmanager:CFT-Secrets:SecretString:domain-protocol}}'
             - Name: PORT
               Value: '8080'
             - Name: SL_DB_URL
