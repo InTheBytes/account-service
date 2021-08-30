@@ -143,6 +143,7 @@ Resources:
         - Field: path-pattern
           Values:
             - /user/*
+            - /user*
       Actions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
