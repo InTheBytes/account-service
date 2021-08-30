@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
 import com.inthebytes.accountservice.login.AuthenticationFilter;
 import com.inthebytes.accountservice.login.AuthorizationFilter;
@@ -57,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		    .logout()
 		    .logoutUrl("/user/logout")
 		    .addLogoutHandler(logoutHandler)
+		    .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
 		    .invalidateHttpSession(true)
 		    .deleteCookies("remove")
 
@@ -79,6 +81,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 	    return super.authenticationManagerBean();
-	    
 	}
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.sql.Timestamp;
 
 @Service
@@ -39,11 +40,14 @@ public class LogoutService implements LogoutHandler {
 				authorization.setExpirationDate(new Timestamp(jwt.getExpiresAt().getTime()));
 
 				authorizationDao.save(authorization);
+				response.setStatus(HttpServletResponse.SC_OK);
 			} else {
 				System.out.println("Token already invalidated");
+				response.setStatus(HttpServletResponse.SC_CONFLICT);
 			}
 		} catch (JWTVerificationException e) {
 			System.err.println("Invalid token");
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
 }

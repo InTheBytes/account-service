@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
@@ -50,22 +51,26 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 				.replace(JwtProperties.TOKEN_PREFIX, "");
 		
 		if (token != null) {
-			DecodedJWT jwt = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
-					.build()
-					.verify(token);
+			try {
+				DecodedJWT jwt = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
+						.build()
+						.verify(token);
 			
-			String role = jwt.getClaim(JwtProperties.AUTHORITIES_KEY)
-					.asString();
+				String role = jwt.getClaim(JwtProperties.AUTHORITIES_KEY)
+						.asString();
+						
+				String userName = jwt.getSubject();
 			
-			String userName = jwt.getSubject();
-			
-			if (role != null && userName != null) {
-				List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-				GrantedAuthority authority = new SimpleGrantedAuthority(role);
-				authorities.add(authority);
-				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userName, null, authorities);
-				request.setAttribute("username", userName);
-				return auth;
+				if (role != null && userName != null) {
+					List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+					GrantedAuthority authority = new SimpleGrantedAuthority(role);
+					authorities.add(authority);
+					UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userName, null, authorities);
+					request.setAttribute("username", userName);
+					return auth;
+				}
+			} catch (TokenExpiredException ex) {
+				return null;
 			}
 			return null;
 		}
