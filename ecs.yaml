@@ -28,13 +28,13 @@ Resources:
           Action:
           - sts:AssumeRole
       Policies:
-        PolicyName: ecs-allow-ses
-        PolicyDocument:
-          Statement:
-            - Effect: Allow
-              Action: 
-                - 'ses:*'
-              Resource: '*'
+        - PolicyName: ecs-allow-ses
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - 'ses:*'
+                Resource: '*'
       Tags:
           - Key: ApplicationName
             Value: !Ref ApplicationName
