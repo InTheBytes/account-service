@@ -53,7 +53,6 @@ public class GlobalControllerAdvice {
 	@ExceptionHandler(SesException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<String> handleEmailError(SesException ex) {
-		ex.printStackTrace();
 		return new ResponseEntity<>("Could not send email", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
