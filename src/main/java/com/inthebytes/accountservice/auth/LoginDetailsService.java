@@ -1,13 +1,11 @@
-package com.inthebytes.accountservice.service;
+package com.inthebytes.accountservice.auth;
 
 import com.inthebytes.accountservice.dao.UserDao;
-import com.inthebytes.accountservice.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.inthebytes.accountservice.login.LoginPrincipal;
 
 @Service
 public class LoginDetailsService implements UserDetailsService {
@@ -17,7 +15,7 @@ public class LoginDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepo.findByUsername(username);
+		com.inthebytes.stacklunch.data.user.User user = userRepo.findByUsername(username);
 		LoginPrincipal loginPrin = new LoginPrincipal(user);
 		return loginPrin;
 	}

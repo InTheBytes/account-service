@@ -1,13 +1,14 @@
-package com.inthebytes.accountservice.service;
+package com.inthebytes.accountservice.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.inthebytes.accountservice.dao.AuthorizationDao;
-import com.inthebytes.accountservice.entity.Authorization;
-import com.inthebytes.accountservice.login.JwtProperties;
+import com.inthebytes.stacklunch.data.authorization.Authorization;
+import com.inthebytes.stacklunch.data.authorization.AuthorizationRepository;
+import com.inthebytes.stacklunch.security.JwtProperties;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -22,7 +23,7 @@ import java.sql.Timestamp;
 public class LogoutService implements LogoutHandler {
 
 	@Autowired
-	AuthorizationDao authorizationDao;
+	AuthorizationRepository authorizationDao;
 
 	@Override
 	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {

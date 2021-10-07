@@ -9,17 +9,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.inthebytes.accountservice.dao.UserDao;
-import com.inthebytes.accountservice.dto.UserDto;
-import com.inthebytes.accountservice.entity.User;
+import com.inthebytes.stacklunch.data.user.User;
+import com.inthebytes.stacklunch.data.user.UserDto;
 
 @Service
 public class RegistrationService {
 	
 	@Autowired
 	UserDao repo;
-	
-	@Autowired
-	UserMapperService mapper;
 
 	public UserDto RegisterNewUser(User newUser) throws SQLException {
 		
@@ -32,7 +29,7 @@ public class RegistrationService {
 			} else {
 				String plaintext = newUser.getPassword();
 				newUser.setPassword(new BCryptPasswordEncoder().encode(plaintext));
-				return mapper.convert(repo.save(newUser));
+				return UserDto.convert(repo.save(newUser));
 			}
 	}
 }

@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.inthebytes.accountservice.dao.PasswordChangeDao;
 import com.inthebytes.accountservice.dao.UserDao;
-import com.inthebytes.accountservice.entity.PasswordChange;
-import com.inthebytes.accountservice.entity.User;
 import com.inthebytes.accountservice.exception.TokenDoesNotExistException;
 import com.inthebytes.accountservice.exception.UserDoesNotExistException;
+import com.inthebytes.stacklunch.data.passchange.PasswordChange;
+import com.inthebytes.stacklunch.data.user.User;
 
 
 @Service
@@ -42,7 +42,7 @@ public class PasswordChangeService {
 	private String domainName;
 	
 	public void sendChangeTokenByEmail(String email) {
-		User user = userRepo.findByEmailIgnoreCase(email);
+		com.inthebytes.stacklunch.data.user.User user = userRepo.findByEmailIgnoreCase(email);
 		if (user == null) {
 			throw new UserDoesNotExistException("User not found with email address " + email);
 		}

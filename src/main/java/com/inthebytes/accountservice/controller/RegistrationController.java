@@ -1,12 +1,5 @@
 package com.inthebytes.accountservice.controller;
 
-import com.inthebytes.accountservice.service.ConfirmationService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,10 +12,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inthebytes.accountservice.dto.UserDto;
-import com.inthebytes.accountservice.entity.User;
+import com.inthebytes.accountservice.service.ConfirmationService;
 import com.inthebytes.accountservice.service.RegistrationService;
+import com.inthebytes.stacklunch.data.user.User;
+import com.inthebytes.stacklunch.data.user.UserDto;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import software.amazon.awssdk.services.ses.model.MessageRejectedException;
 
 @RestController

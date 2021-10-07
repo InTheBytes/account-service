@@ -7,35 +7,32 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inthebytes.accountservice.dao.UserDao;
-import com.inthebytes.accountservice.dto.UserDto;
-import com.inthebytes.accountservice.entity.User;
 import com.inthebytes.accountservice.exception.UserDoesNotExistException;
+import com.inthebytes.stacklunch.data.user.User;
+import com.inthebytes.stacklunch.data.user.UserDto;
 
 @Service
 @Transactional
 public class UserCrudService {
-	
-	@Autowired
-	private UserMapperService mapper;
 
 	@Autowired
 	private UserDao repo;
 	
 	public UserDto findByUsername(String username) {
-		return mapper.convert(repo.findByUsername(username));
+		return UserDto.convert(repo.findByUsername(username));
 	}
 	
 	public Page<UserDto> readUsers(Integer page, Integer pageSize) {
-		return repo.findAll(PageRequest.of(page, pageSize)).map((x) -> mapper.convert(x));
+		return UserDto.convert(repo.findAll(PageRequest.of(page, pageSize)));
 	}
 	
 	public Page<UserDto> readUsersByActive(Boolean active, Integer page, Integer pageSize) {
-		return repo.findByActive(active, PageRequest.of(page, pageSize)).map((x) -> mapper.convert(x));
+		return UserDto.convert(repo.findByActive(active, PageRequest.of(page, pageSize)));
 	}
 	
 	public UserDto readUser(String userId) {
 		User user = repo.findByUserId(userId);
-		return (user == null) ? null : mapper.convert(user);
+		return (user == null) ? null : UserDto.convert(user);
 	}
 	
 	public UserDto updateUser(UserDto user, String userId) {
@@ -45,10 +42,10 @@ public class UserCrudService {
 		else {
 			user.setUserId(userId);
 			String password = userEntity.getPassword();
-			userEntity = mapper.convert(user);
+			userEntity = user.convert();
 			userEntity.setPassword(password);
 			userEntity = repo.save(userEntity);
-			UserDto result = mapper.convert(userEntity);
+			UserDto result = UserDto.convert(userEntity);
 			if (result.equals(user)) {
 				return result;
 			} else {
@@ -63,7 +60,7 @@ public class UserCrudService {
 			throw new UserDoesNotExistException("User ID "+userId+" not found");
 		else {
 			user.setActive(false);
-			return mapper.convert(repo.save(user));
+			return UserDto.convert(repo.save(user));
 		}
 	}
 }

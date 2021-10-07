@@ -2,8 +2,9 @@ package com.inthebytes.accountservice.service;
 
 import com.inthebytes.accountservice.dao.ConfirmationDao;
 import com.inthebytes.accountservice.dao.UserDao;
-import com.inthebytes.accountservice.entity.Confirmation;
-import com.inthebytes.accountservice.entity.User;
+import com.inthebytes.stacklunch.data.confirmation.Confirmation;
+import com.inthebytes.stacklunch.data.user.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,10 +45,10 @@ public class ConfirmationService {
 		Confirmation token = confirmationDao.findByConfirmationToken(confirmationToken);
 
 		if (token != null) {
-			if (!token.getConfirmed() && token.getCreatedDate().toLocalDateTime().plusSeconds(confirmationWindowSeconds).isAfter(LocalDateTime.now())) {
+			if (!token.getIsConfirmed() && token.getCreatedDate().toLocalDateTime().plusSeconds(confirmationWindowSeconds).isAfter(LocalDateTime.now())) {
 				User user = token.getUser();
 				user.setActive(true);
-				token.setConfirmed(true);
+				token.setIsConfirmed(true);
 				confirmationDao.save(token);
 				userDao.save(user);
 				return "Account confirmed!";
@@ -69,7 +70,7 @@ public class ConfirmationService {
 
 		Confirmation existingUserConfirmation = confirmationDao.findConfirmationByUser(existingUser);
 
-		if (existingUserConfirmation != null && existingUserConfirmation.getConfirmed()) {
+		if (existingUserConfirmation != null && existingUserConfirmation.getIsConfirmed()) {
 			return "User already confirmed!";
 		}
 
@@ -79,7 +80,7 @@ public class ConfirmationService {
 		confirmation.setCreatedDate(new Timestamp(System.currentTimeMillis()));
 		confirmation.setConfirmationToken(UUID.randomUUID().toString());
 		confirmation.setUser(existingUser);
-		confirmation.setConfirmed(false);
+		confirmation.setIsConfirmed(false);
 		confirmationDao.save(confirmation);
 
 		// The email body for non-HTML email clients

@@ -1,4 +1,4 @@
-package com.inthebytes.accountservice.login;
+package com.inthebytes.accountservice.auth;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inthebytes.accountservice.dto.BareUserDto;
+import com.inthebytes.stacklunch.data.user.User;
+import com.inthebytes.stacklunch.security.JwtProperties;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	
@@ -35,9 +36,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-		BareUserDto credentials = null;
+		User credentials;
 		try {
-			credentials = new ObjectMapper().readValue(request.getInputStream(), BareUserDto.class);
+			credentials = new ObjectMapper().readValue(request.getInputStream(), User.class);
 		} catch (IOException e) {
 			return null;
 		}

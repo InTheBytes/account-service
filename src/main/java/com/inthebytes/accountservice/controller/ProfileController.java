@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inthebytes.accountservice.dto.UserDto;
 import com.inthebytes.accountservice.service.PasswordChangeService;
 import com.inthebytes.accountservice.service.UserCrudService;
+import com.inthebytes.stacklunch.data.user.UserDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

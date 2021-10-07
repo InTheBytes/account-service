@@ -1,14 +1,15 @@
-package com.inthebytes.accountservice.login;
+package com.inthebytes.accountservice.auth;
 
 import java.util.ArrayList;
 
 import java.util.Collection;
 import java.util.List;
 
-import com.inthebytes.accountservice.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.inthebytes.stacklunch.data.user.User;
 
 
 public class LoginPrincipal implements UserDetails {

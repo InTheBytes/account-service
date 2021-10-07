@@ -1,15 +1,14 @@
 package com.inthebytes.accountservice.dao;
 
-import com.inthebytes.accountservice.entity.User;
-
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.inthebytes.stacklunch.data.user.User;
+import com.inthebytes.stacklunch.data.user.UserRepository;
 
 @Repository
-public interface UserDao extends JpaRepository<User, String> {
+public interface UserDao extends UserRepository {
 	User findByEmailIgnoreCase(String email);
 	User findByUsername(String username);
 	User findByUserId(String userId);
