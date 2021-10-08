@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.inthebytes.accountservice.dao.UserDao;
 import com.inthebytes.stacklunch.data.user.User;
 import com.inthebytes.stacklunch.data.user.UserDto;
+import com.inthebytes.stacklunch.data.user.UserRegistrationDto;
 
 @Service
 public class RegistrationService {
@@ -18,7 +19,7 @@ public class RegistrationService {
 	@Autowired
 	UserDao repo;
 
-	public UserDto RegisterNewUser(User newUser) throws SQLException {
+	public UserDto RegisterNewUser(UserRegistrationDto newUser) throws SQLException {
 		
 			List<User> accounts = repo.findAll();
 			List<String> emails = new ArrayList<String>();
@@ -29,7 +30,7 @@ public class RegistrationService {
 			} else {
 				String plaintext = newUser.getPassword();
 				newUser.setPassword(new BCryptPasswordEncoder().encode(plaintext));
-				return UserDto.convert(repo.save(newUser));
+				return UserDto.convert(repo.save(newUser.convert()));
 			}
 	}
 }

@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inthebytes.accountservice.service.ConfirmationService;
 import com.inthebytes.accountservice.service.RegistrationService;
-import com.inthebytes.stacklunch.data.user.User;
 import com.inthebytes.stacklunch.data.user.UserDto;
+import com.inthebytes.stacklunch.data.user.UserRegistrationDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -46,7 +46,7 @@ public class RegistrationController {
 	})
 	@PostMapping(path = "/register")
 	@ResponseBody
-	public ResponseEntity<UserDto> registerUser(@RequestBody User newUser) {
+	public ResponseEntity<UserDto> registerUser(@RequestBody UserRegistrationDto newUser) {
 
 		ResponseEntity<UserDto> response;
 		UserDto updated = null;

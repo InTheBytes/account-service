@@ -67,13 +67,7 @@ public class PasswordChangeService {
 		token.setConfirmationToken(UUID.randomUUID().toString());
 		token.setUser(user);
 		token.setCreatedTime(Timestamp.from(Instant.now()));
-		token = passRepo.save(token);
-		
-		if (token == null) {
-			throw new RuntimeException("Failed to create token");
-		} else {
-			return token;
-		}
+		return passRepo.save(token);
 	}
 	
 	public Boolean changePassword(String token, String newPassword) {
@@ -89,9 +83,8 @@ public class PasswordChangeService {
 		user.setPassword(password);
 		user = userRepo.save(user);
 		passRepo.delete(savedToken);
-		if (user == null) {
-			throw new UserDoesNotExistException("Token not associated with a valid user");
-		} else if (!user.getPassword().equals(password)) {
+		
+		if (!user.getPassword().equals(password)) {
 			throw new RuntimeException("Failed to change password");
 		} else return true;
 	}
